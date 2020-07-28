@@ -1,10 +1,11 @@
 package io.zipcoder.casino;
 
-
 import org.junit.After;
 import org.junit.Before;
 
-public class CasinoTest {
+import static org.junit.Assert.*;
+
+public class CardTest {
     @Before
     public void setUp() throws Exception {
     }
