@@ -1,51 +1,81 @@
 package io.zipcoder.casino;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import static org.junit.Assert.assertEquals;
 
 public class CasinoDriverTest {
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
     CasinoDriver testCasinoDriver;
 
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         testCasinoDriver = new CasinoDriver();
     }
 
+    @BeforeEach
+    public void setUpStreams() {
+        System.setOut(new PrintStream(outContent));
+    }
+
     @AfterEach
-    public void tearDown() throws Exception {
+    public void restoreStreams() {
+        System.setOut(originalOut);
     }
 
-    public void testReturningPlayer() {
 
-
+    @Test
+    public void test() {
+        String expected = "";
+        //testCasinoDriver.();
+        assertEquals(expected, outContent.toString());
     }
 
-    public void testPlayerLogin() {
+    @Test
+    void startCasino() {
     }
 
-    public void testCreatePlayer() {
+    @Test
+    void playerLogin() {
     }
 
-    public void testCheckNameAvailability() {
+    @Test
+    void isReturningPlayer() {
     }
 
-    public void testSetCurrentPlayer() {
+    @Test
+    void createPlayer() {
     }
 
-    public void testGetCurrentPlayer() {
+    @Test
+    void isNameAvailable() {
     }
 
-    public void testPrintGamesList() {
+    @Test
+    void setCurrentPlayer() {
     }
 
-    public void testPlayerLogout() {
+    @Test
+    void getCurrentPlayer() {
     }
 
-    public void testChooseGame() {
+    @Test
+    void playerLogout() {
+    }
+
+    @Test
+    void printGamesList() {
+    }
+
+    @Test
+    void chooseGame() {
     }
 }
