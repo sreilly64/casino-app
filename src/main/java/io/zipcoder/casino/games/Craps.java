@@ -17,6 +17,7 @@ public class Craps extends DiceGame implements GamblingGame{
     private Player player;
     private CrapsApp ui;
     private Boolean playingGame;
+    public static String gameName = "Craps";
 
     public enum BetType {PASS, PASS_ODDS, DONT_PASS, DONT_PASS_ODDS, COME,COME_4, COME_5, COME_6, COME_8, COME_9,
         COME_10, COME_ODDS_4, COME_ODDS_5, COME_ODDS_6, COME_ODDS_8, COME_ODDS_9, COME_ODDS_10, DONT_COME, DONT_COME_4,
