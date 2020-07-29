@@ -9,6 +9,7 @@ public class GoingToBoston extends DiceGame{
     int[] highestRolls;
     Map<Player, Integer> nPCScores;
     Player currentPlayer;
+    int playerScore;
     Boolean playing;
 
     public GoingToBoston() {
@@ -21,7 +22,6 @@ public class GoingToBoston extends DiceGame{
         while(!(userInput >= 1 && userInput <= 3)) {
             userInput = console.getIntegerInput("Choose 1, 2, or 3 opponents.");
         }
-        highestRolls = new int[3];
         nPCScores = new LinkedHashMap<>(userInput);
         createNPCs(userInput);
     }
@@ -36,8 +36,6 @@ public class GoingToBoston extends DiceGame{
         return gameName;
     }
 
-
-
     @Override
     public void startGame(Player player) {
         currentPlayer = player;
@@ -45,7 +43,7 @@ public class GoingToBoston extends DiceGame{
         boolean stillPlaying = true;
         while (playing) {
             resetGame();
-            playRound();
+            playerScore = playRound(currentPlayer);
             playNPCRound();
             findWinner();
             String userInput = console.getStringInput("Play again? <Yes> | <No>");
@@ -72,10 +70,13 @@ public class GoingToBoston extends DiceGame{
         }
     }
 
-    private int playRound() {
+    private int playRound(Player player) {
+        highestRolls = new int[3];
         int numOfDie = 3;
         for (int i = 0; i < highestRolls.length; i++) {
             highestRolls[i] = Collections.max(rollDice(numOfDie));
+            //console.println("Out of "+numOfDie+" die, the highest roll for "+player.getName()+" was
+            // "+highestRolls[i]+".");
             numOfDie--;
         }
         return IntStream.of(highestRolls).sum();
@@ -84,16 +85,16 @@ public class GoingToBoston extends DiceGame{
     private void playNPCRound() {
         Set<Player> players = nPCScores.keySet();
         for (Player nPC : players) {
-            nPCScores.put(nPC, playRound());
+            nPCScores.put(nPC, playRound(nPC));
         }
     }
 
     private void findWinner() {
         Player nPC = Collections.max(nPCScores.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
-        console.print("You scored "+playRound()+". ");
-        if (playRound() >= nPCScores.get(nPC)) {
+        console.print("You scored "+playerScore+". ");
+        if (playerScore >= nPCScores.get(nPC)) {
             console.println("You won!");
-        } else if (playRound() == nPCScores.get(nPC)) {
+        } else if (playerScore == nPCScores.get(nPC)) {
             console.println(nPC.getName()+" scored "+nPCScores.get(nPC)+". You tied!");
         } else {
             console.println(nPC.getName()+" scored "+nPCScores.get(nPC)+". You lost.");
