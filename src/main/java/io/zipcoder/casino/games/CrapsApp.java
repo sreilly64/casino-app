@@ -15,11 +15,14 @@ import javafx.stage.Stage;
 import javafx.scene.control.*;
 
 
-public class CrapsGUI extends Application {
+public class CrapsApp extends Application {
 
-    private Craps currentGame = new Craps();
+    private Craps currentGame;
     //private Craps currentGame = new Craps();
 
+    public CrapsApp(Craps currentGame) {
+        this.currentGame = currentGame;
+    }
 
     private TextField createPuckField(){
         TextField output = new TextField();
@@ -53,7 +56,7 @@ public class CrapsGUI extends Application {
 
         //first Pane
         GridPane title = new GridPane();
-        title.setAlignment(Pos.CENTER);
+        title.setAlignment(Pos.TOP_CENTER);
 
         Text crapsLabel = new Text("Craps Table");
         crapsLabel.setFont(Font.font("Times New Romans", FontWeight.NORMAL, 20));
@@ -271,7 +274,45 @@ public class CrapsGUI extends Application {
         //add ninth row to grid pane, Pass Line Odds
         mainBoard.add(passLineOddsButton, 0,9,9,1);
 
-        vbox.getChildren().addAll(title, mainBoard); //add all buttons and fields here
+        GridPane dicePane = new GridPane();
+        dicePane.setAlignment(Pos.CENTER);
+
+        //create buttons and display for Dice
+        TextField dieOne = new TextField();
+        dieOne.setPrefSize(50, 50);
+        if(currentGame.getDiceRolls() != null){
+            dieOne.setText(currentGame.getDiceRolls().get(0).toString());
+        }
+        TextField dieTwo = new TextField();
+        dieTwo.setPrefSize(50,50);
+        if(currentGame.getDiceRolls() != null){
+            dieTwo.setText(currentGame.getDiceRolls().get(1).toString());
+        }
+
+        Button rollDiceButton = new Button("Roll Dice");
+        rollDiceButton.setPrefSize(100,50);
+        rollDiceButton.setDisable(true);
+
+        //add dice elements to dice grid pane
+        dicePane.add(dieOne, 0, 0);
+        dicePane.add(dieTwo,1,0);
+        dicePane.add(rollDiceButton, 0,1,2,1);
+
+        //Player Balance grid pane
+        GridPane playerBalancePane = new GridPane();
+        playerBalancePane.setAlignment(Pos.CENTER);
+        playerBalancePane.setHgap(10);
+
+        //create elements for Balance grid pane
+        Label balanceLabel = new Label("Balance:");
+        TextField balanceDisplayField = new TextField();
+        //balanceDisplayField.setText(currentGame.getPlayer().getCurrentFunds().toString());
+
+        //add elements to Balance grid pane
+        playerBalancePane.add(balanceLabel, 0,0);
+        playerBalancePane.add(balanceDisplayField, 1, 0);
+
+        vbox.getChildren().addAll(title, mainBoard, dicePane, playerBalancePane); //add all buttons and fields here
         return vbox;
     }
 
@@ -283,8 +324,7 @@ public class CrapsGUI extends Application {
     }
 
     public void launcher(Player player){
-        currentGame.setPlayer(player);
-        CrapsGUI.main(null);
+        main(null);
     }
 
     public static void main(String[] args){

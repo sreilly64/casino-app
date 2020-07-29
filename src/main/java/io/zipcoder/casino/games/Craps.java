@@ -1,7 +1,7 @@
 package io.zipcoder.casino.games;
 
 import io.zipcoder.casino.player.Player;
-import javafx.stage.Stage;
+import io.zipcoder.casino.utilities.Console;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -15,6 +15,8 @@ public class Craps extends DiceGame implements GamblingGame{
     private ArrayList<Integer> diceRolls;
     private Integer betAmount;
     private Player player;
+    private CrapsApp ui;
+    private Boolean playingGame;
 
     public enum BetType {PASS, PASS_ODDS, DONT_PASS, DONT_PASS_ODDS, COME,COME_4, COME_5, COME_6, COME_8, COME_9,
         COME_10, COME_ODDS_4, COME_ODDS_5, COME_ODDS_6, COME_ODDS_8, COME_ODDS_9, COME_ODDS_10, DONT_COME, DONT_COME_4,
@@ -27,8 +29,6 @@ public class Craps extends DiceGame implements GamblingGame{
     public Craps() {
         this.comOutPhase = true;
         this.currentPoint = 0;
-        //this.startGame();
-        setUpBetsMap();
     }
 
     private void setUpBetsMap() {
@@ -47,6 +47,10 @@ public class Craps extends DiceGame implements GamblingGame{
         return this.currentPoint;
     }
 
+    public ArrayList<Integer> getDiceRolls() {
+        return diceRolls;
+    }
+
     public void setLastDiceRoll(){
         this.diceRolls = rollDice(2);
     }
@@ -61,13 +65,21 @@ public class Craps extends DiceGame implements GamblingGame{
         return null;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     public void setPlayer(Player player){
         this.player = player;
     }
 
+    @Override
     public Integer getCurrentBet() {
-
-        return null;
+        Integer totalBets = 0;
+        for(Integer bet: this.currentBets.values()){
+            totalBets += bet;
+        }
+        return totalBets;
     }
 
     public Integer getBetAmount() {
@@ -90,6 +102,14 @@ public class Craps extends DiceGame implements GamblingGame{
 
     }
 
+    public void actionSelection(){
+        if(getCurrentBet() == 0){
+            System.out.println("What type of bet would you like to make?");
+        }else{
+            System.out.println("Do you want to roll or place further bets?");
+        }
+    }
+
     public void resetGame() {
 
     }
@@ -106,7 +126,18 @@ public class Craps extends DiceGame implements GamblingGame{
 
     public void startGame(Player player) {
         setPlayer(player);
+        setUpBetsMap();
+        System.out.println("Welcome to the Craps table!");
+        this.playingGame = true;
+        while(this.playingGame){
+            actionSelection();
+        }
+
+        /*
         //initiate javafx
-        //CrapsGUI.main(null);
+        CrapsApp test = new CrapsApp();
+        this.ui = test;
+
+        test.launcher(player); */
     }
 }

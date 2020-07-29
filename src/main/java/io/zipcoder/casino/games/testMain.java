@@ -5,8 +5,10 @@ import io.zipcoder.casino.player.Player;
 public class testMain {
 
     public static void main(String[] args){
-        Craps test = new Craps();
+        //Craps test = new Craps();
         Player testPlayer = new Player("Bob", 1000);
-        test.startGame(testPlayer);
+        CrapsApp test = new CrapsApp();
+
+        test.launcher(testPlayer);
     }
 }
