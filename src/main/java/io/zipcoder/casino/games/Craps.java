@@ -23,4 +23,24 @@ public class Craps extends DiceGame implements GamblingGame{
     public void startGame(Player player) {
 
     }
+
+    @Override
+    public Integer getCurrentBet() {
+        return null;
+    }
+
+    @Override
+    public void bet(Integer amount) {
+
+    }
+
+    @Override
+    public void clearBets() {
+
+    }
+
+    @Override
+    public void payout(Player player, Integer amount) {
+
+    }
 }

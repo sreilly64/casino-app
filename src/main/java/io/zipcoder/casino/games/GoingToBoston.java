@@ -16,7 +16,7 @@ public class GoingToBoston extends DiceGame{
 
     @Override
     public String getGameName() {
-        return null;
+        return gameName;
     }
 
     @Override
