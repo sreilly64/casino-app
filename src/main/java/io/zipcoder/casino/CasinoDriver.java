@@ -79,9 +79,8 @@ public class CasinoDriver {
 
     Player createPlayer(String name, Integer startingFunds) {
         while(!isNameAvailable(name)) {
-            String newName = console.getStringInput("Unfortunately, there is already an account with the name "
+            name = console.getStringInput("Unfortunately, there is already an account with the name "
                 + name + ". Please enter a different name.");
-            name = newName;
         }
         playersList.put(name, new Player(name, startingFunds));
         return playersList.get(name);
