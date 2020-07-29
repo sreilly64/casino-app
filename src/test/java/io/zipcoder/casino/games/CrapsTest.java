@@ -1,7 +1,13 @@
 package io.zipcoder.casino.games;
 
+import io.zipcoder.casino.player.Player;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -12,5 +18,21 @@ public class CrapsTest {
 
     @After
     public void tearDown() throws Exception {
+    }
+
+    @Test
+    public void testSetUpBetsMap(){
+        //given
+        Craps craps = new Craps();
+        Player player = new Player("Bob", 1000);
+        craps.setPlayer(player);
+
+        //when
+        Map<Craps.BetType, Integer> expected = new LinkedHashMap<Craps.BetType, Integer>();
+        Map<Craps.BetType, Integer> actual = craps.getCurrentBet();
+
+        //then
+        Assert.assertEquals(expected, actual);
+
     }
 }
