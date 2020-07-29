@@ -6,24 +6,28 @@ import io.zipcoder.casino.player.Player;
 import java.util.List;
 
 public class GoFish extends CardGame {
+    public static String gameName = "Go Fish";
     public GoFish(List<Card> currentDeck) {
         super(currentDeck);
     }
 
     void dealCards(Integer numOfCards) {
-
     }
 
-    public void resetGame() {
+    @Override
+    public void getWinner() {
+    }
 
+    @Override
+    public void resetGame() {
     }
 
     public void quitGame() {
-
     }
 
+    @Override
     public String getGameName() {
-        return null;
+        return gameName;
     }
 
     public void startGame(Player player) {
