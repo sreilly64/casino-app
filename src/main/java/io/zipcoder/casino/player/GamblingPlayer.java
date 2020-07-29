@@ -2,11 +2,7 @@ package io.zipcoder.casino.player;
 
 public interface GamblingPlayer {
 
+    Integer getCurrentFunds();
 
-     Integer getCurrentFunds();
-
-
-    void addToCurrentFunds(Integer newFunds);
-
-
+    void addToCurrentFunds(Integer amount);
 }
