@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 public class CrapsTest {
     @Before
     public void setUp() throws Exception {
+
     }
 
     @After

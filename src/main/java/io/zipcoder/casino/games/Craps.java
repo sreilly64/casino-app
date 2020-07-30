@@ -1,6 +1,5 @@
 package io.zipcoder.casino.games;
 
-import com.sun.xml.internal.messaging.saaj.packaging.mime.util.BEncoderStream;
 import io.zipcoder.casino.player.Player;
 
 import java.util.ArrayList;
@@ -12,10 +11,10 @@ public class Craps extends DiceGame implements GamblingGame{
     private Integer currentPoint;
     private TreeMap<BetType, Integer> currentBets;
     private ArrayList<Integer> diceRolls;
+    private Integer diceTotal;
     private Integer betAmount;
     private Integer minimumBet = 5;
     private Player player;
-    private CrapsApp ui;
     private Boolean playingGame;
     private ArrayList<BetType> oddsBetsList = new ArrayList<>();
     private ArrayList<BetType> comeOutBetsList = new ArrayList<>();
@@ -25,13 +24,13 @@ public class Craps extends DiceGame implements GamblingGame{
     private ArrayList<BetType> dontPassOddsDontComeOddsLay = new ArrayList<>();
     private ArrayList<BetType> placeBetsList = new ArrayList<>();
     private ArrayList<BetType> activeBets = new ArrayList<>();
+    private ArrayList<Integer> pointPhaseValues = new ArrayList<>();
 
 
     public static String gameName = "Craps";
 
     public Craps() {
-        this.comOutPhase = true;
-        this.currentPoint = 0;
+
     }
 
     public void setUpBetsMap() {
@@ -78,21 +77,19 @@ public class Craps extends DiceGame implements GamblingGame{
         return diceRolls;
     }
 
-    public void setLastDiceRoll(){
+    public void rollTheDice(){
         this.diceRolls = rollDice(2);
+        this.diceTotal = this.diceRolls.get(0) + this.diceRolls.get(1);
         printDiceRolls();
         setActiveBets();
-        checkBetWinConditions();
-        checkBetLoseConditions();
+        checkIfBetsAreAffected();
         assessGamePhase();
-        checkIfWinOrLose();
     }
 
     private void printDiceRolls() {
-        Integer sum = this.diceRolls.get(0) + this.diceRolls.get(1);
         System.out.println("Die 1: " + this.diceRolls.get(0) + "\n" +
                 "Die 2: " + this.diceRolls.get(1) + "\n" +
-                "Total: " + sum);
+                "Total: " + diceTotal);
     }
 
     private void setActiveBets() {
@@ -106,30 +103,68 @@ public class Craps extends DiceGame implements GamblingGame{
         activeBets = output;
     }
 
-    private void checkBetWinConditions() {
-
+    private void checkIfBetsAreAffected() {
+        for(BetType betType : this.activeBets){
+            effectOfRollOnBet(betType);
+        }
     }
 
-    private void checkBetLoseConditions() {
+    private void effectOfRollOnBet(BetType betType) {
+        if(betType.equals(BetType.PASS) || betType.equals(BetType.PASS_ODDS)){ //Pass Line Bet
+            if(this.comOutPhase){ //if on Come Out phase
+                if(this.diceTotal == 7 || this.diceTotal == 11){ //if bet wins
+                    payout(this.player, calculatePayoff(betType));
+                    clearBet(betType);
+                }else if(this.diceTotal == 2 || this.diceTotal == 3 || this.diceTotal == 12){ //if bet loses
+                    clearBet(betType);
+                    losingMessage(betType);
+                }
+            }else{ //if on Point Phase
+                if(this.diceTotal == this.currentPoint){
+                    payout(this.player, calculatePayoff(betType));
+                    clearBet(betType);
+                }else if(this.diceTotal == 7){
+                    clearBet(betType);
+                    losingMessage(betType);
+                }
+            }
+        }//else if(){
 
+        //}
+    }
+
+    public Integer calculatePayoff(BetType betType){
+        Integer output = 0;
+        if(betType.equals(BetType.PASS)){
+            output = this.currentBets.get(betType) * 2;
+        }
+        return output;
+    }
+
+    private void losingMessage(BetType betType) {
+        System.out.println("Your " + betType + " bet has lost.");
+    }
+
+    private void clearBet(BetType betType) {
+        this.currentBets.replace(betType, 0);
     }
 
     private void assessGamePhase() {
-
-    }
-
-    private void checkIfWinOrLose() {
-
-        for(BetType betType : activeBets){
-
+        if(getGamePhase()){ //if you are in Come Out phase
+            for(Integer value : this.pointPhaseValues){
+                if(this.diceTotal == value){
+                    this.comOutPhase = false;
+                    this.currentPoint = this.diceTotal;
+                }
+            }
+        }else{ //if you are in the Point Phase
+            if(this.diceTotal == 7 || this.diceTotal == this.currentPoint){
+                this.comOutPhase = true;
+                this.currentPoint = 0;
+            }
         }
-
     }
 
-    public Integer calculatePayoffs(){
-
-        return null;
-    }
 
     public BetType selectBetType(String input){
         String betType = input.toLowerCase();
@@ -299,33 +334,49 @@ public class Craps extends DiceGame implements GamblingGame{
     }
 
     public void clearBets() {
-
+        for(BetType betType : BetType.values()){
+            this.currentBets.replace(betType, 0);
+        }
     }
 
     public void payout(Player player, Integer amount) {
-
+        player.addToCurrentFunds(amount);
+        System.out.println("You've won $" + amount + "!");
     }
 
     public void actionSelection(){
+        printCurrentGamePhase();
         if(getCurrentBet() == 0){ //if there are no bets placed, do the following
             gatherBetInformation();
 
         }else{ //if a bet has been placed
             printCurrentBets();
             String userInput = this.console.getStringInput("Do you want to roll or place further bets?");
+            checkForGameQuit(userInput);
             if(userInput.equalsIgnoreCase("roll")){
-                this.setLastDiceRoll();
+                this.rollTheDice();
             }else if(userInput.equalsIgnoreCase("bet")){
                 gatherBetInformation();
             }else{
-                System.out.println("Clarify, roll or bet?");
+                if(playingGame){//this is to prevent the msg from displaying if the user inputs "quit"
+                    System.out.println("Clarify, roll or bet?");
+                }
             }
+        }
+    }
+
+    private void printCurrentGamePhase() {
+        if(this.comOutPhase){
+            System.out.println("Come Out roll");
+        }else{
+            System.out.println("Point is " + this.currentPoint);
         }
     }
 
     private void gatherBetInformation() {
         System.out.println("Balance: $" + this.player.getCurrentFunds());
         String inputBetType = this.console.getStringInput("What type of bet would you like to make?");
+        checkForGameQuit(inputBetType);
         BetType chosenBetType = selectBetType(inputBetType);
 
         if(isValidBetType(chosenBetType)){
@@ -344,6 +395,12 @@ public class Craps extends DiceGame implements GamblingGame{
                     System.out.println("Bet amount did not meet requirements.");
                 }
             }
+        }
+    }
+
+    private void checkForGameQuit(String input) {
+        if(input.equalsIgnoreCase("quit")){
+            quitGame();
         }
     }
 
@@ -366,7 +423,9 @@ public class Craps extends DiceGame implements GamblingGame{
                 return false;
             }
         }else{
-            System.out.println("Invalid bet type");
+            if(playingGame){ //this prevents msg from displaying if the user inputs "quit"
+                System.out.println("Invalid bet type");
+            }
             return false;
         }
     }
@@ -562,18 +621,20 @@ public class Craps extends DiceGame implements GamblingGame{
         placeBetsList.add(BetType.PLACE_LOSE_9);
         placeBetsList.add(BetType.PLACE_LOSE_10);
 
+        pointPhaseValues.add(4);
+        pointPhaseValues.add(5);
+        pointPhaseValues.add(6);
+        pointPhaseValues.add(8);
+        pointPhaseValues.add(9);
+        pointPhaseValues.add(10);
+
         this.playingGame = true;
+        this.comOutPhase = true;
+        this.currentPoint = 0;
 
         System.out.println("Welcome to the Craps table!");
         while(this.playingGame){
             actionSelection();
         }
-
-        /*
-        //initiate javafx
-        CrapsApp test = new CrapsApp();
-        this.ui = test;
-
-        test.launcher(player); */
     }
 }
