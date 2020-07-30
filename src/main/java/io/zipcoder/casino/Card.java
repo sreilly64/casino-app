@@ -39,4 +39,12 @@ public class Card {
         }
         return newDeck;
     }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "rank=" + rank.name() +
+                ", suit=" + suit.name() +
+                '}';
+    }
 }

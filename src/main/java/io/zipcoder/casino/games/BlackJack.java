@@ -1,4 +1,62 @@
 package io.zipcoder.casino.games;
 
-public class BlackJack extends CardGame implements GamblingGame{
+import io.zipcoder.casino.Card;
+import io.zipcoder.casino.player.Player;
+
+import java.util.List;
+
+public class BlackJack extends CardGame implements GamblingGame {
+    public BlackJack(List<Card> currentDeck) {
+        super(currentDeck);
+    }
+
+    @Override
+    void dealCards(Integer numOfCards) {
+
+    }
+
+    @Override
+    public void getWinner() {
+
+    }
+
+    @Override
+    public Integer getCurrentBet() {
+        return null;
+    }
+
+    @Override
+    public void bet(Integer amount) {
+
+    }
+
+    @Override
+    public void clearBets() {
+
+    }
+
+    @Override
+    public void payout(Player player, Integer amount) {
+
+    }
+
+    @Override
+    public void resetGame() {
+
+    }
+
+    @Override
+    public void quitGame() {
+
+    }
+
+    @Override
+    public String getGameName() {
+        return null;
+    }
+
+    @Override
+    public void startGame(Player player) {
+
+    }
 }
