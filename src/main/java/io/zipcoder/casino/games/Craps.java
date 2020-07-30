@@ -1,5 +1,6 @@
 package io.zipcoder.casino.games;
 
+import com.sun.xml.internal.messaging.saaj.packaging.mime.util.BEncoderStream;
 import io.zipcoder.casino.player.Player;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class Craps extends DiceGame implements GamblingGame{
     private ArrayList<BetType> passLineOddsComeBetOddsBuy = new ArrayList<>();
     private ArrayList<BetType> dontPassOddsDontComeOddsLay = new ArrayList<>();
     private ArrayList<BetType> placeBetsList = new ArrayList<>();
+    private ArrayList<BetType> activeBets = new ArrayList<>();
 
 
     public static String gameName = "Craps";
@@ -79,6 +81,10 @@ public class Craps extends DiceGame implements GamblingGame{
     public void setLastDiceRoll(){
         this.diceRolls = rollDice(2);
         printDiceRolls();
+        setActiveBets();
+        checkBetWinConditions();
+        checkBetLoseConditions();
+        assessGamePhase();
         checkIfWinOrLose();
     }
 
@@ -89,7 +95,34 @@ public class Craps extends DiceGame implements GamblingGame{
                 "Total: " + sum);
     }
 
+    private void setActiveBets() {
+        //find and add affected bets to list
+        ArrayList<BetType> output = new ArrayList<>();
+        for(BetType betType: BetType.values()){
+            if(this.currentBets.get(betType) > 0){
+                output.add(betType);
+            }
+        }
+        activeBets = output;
+    }
+
+    private void checkBetWinConditions() {
+
+    }
+
+    private void checkBetLoseConditions() {
+
+    }
+
+    private void assessGamePhase() {
+
+    }
+
     private void checkIfWinOrLose() {
+
+        for(BetType betType : activeBets){
+
+        }
 
     }
 
