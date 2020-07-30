@@ -277,13 +277,4 @@ public class GoFish extends CardGame {
         }
         return cardRank;
     }
-
-    public static void main(String[] args) {
-        System.out.println("Go Fish");
-        List<Card> newDeck = new ArrayList<>();
-        newDeck=getNewDeck();
-        GoFish go = new GoFish(newDeck);
-        Player humanPlayer=new Player("Joe",20);
-        go.startGame(humanPlayer);
-    }
 }
