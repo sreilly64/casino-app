@@ -25,11 +25,16 @@ public class CrapsTest {
         //given
         Craps craps = new Craps();
         Player player = new Player("Bob", 1000);
-        craps.setPlayer(player);
+        craps.setUpBetsMap();
 
         //when
-        Map<Craps.BetType, Integer> expected = new LinkedHashMap<Craps.BetType, Integer>();
-        Map<Craps.BetType, Integer> actual = craps.getCurrentBet();
+        Map<BetType, Integer> expected = new LinkedHashMap<>();
+        /*
+        for(BetType bet: BetType.values()){
+            expected.put(bet, 0);
+        }
+        */
+        Map<BetType, Integer> actual = craps.getCurrentBetsMap();
 
         //then
         Assert.assertEquals(expected, actual);
