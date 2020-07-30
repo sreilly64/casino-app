@@ -12,6 +12,7 @@ public class Craps extends DiceGame implements GamblingGame{
     private TreeMap<BetType, Integer> currentBets;
     private ArrayList<Integer> diceRolls;
     private Integer betAmount;
+    private Integer minimumBet = 5;
     private Player player;
     private CrapsApp ui;
     private Boolean playingGame;
@@ -19,6 +20,10 @@ public class Craps extends DiceGame implements GamblingGame{
     private ArrayList<BetType> comeOutBetsList = new ArrayList<>();
     private ArrayList<BetType> pointPhaseBetsList = new ArrayList<>();
     private ArrayList<BetType> buyBetsList = new ArrayList<>();
+    private ArrayList<BetType> passLineOddsComeBetOddsBuy = new ArrayList<>();
+    private ArrayList<BetType> dontPassOddsDontComeOddsLay = new ArrayList<>();
+    private ArrayList<BetType> placeBetsList = new ArrayList<>();
+
 
     public static String gameName = "Craps";
 
@@ -73,6 +78,19 @@ public class Craps extends DiceGame implements GamblingGame{
 
     public void setLastDiceRoll(){
         this.diceRolls = rollDice(2);
+        printDiceRolls();
+        checkIfWinOrLose();
+    }
+
+    private void printDiceRolls() {
+        Integer sum = this.diceRolls.get(0) + this.diceRolls.get(1);
+        System.out.println("Die 1: " + this.diceRolls.get(0) + "\n" +
+                "Die 2: " + this.diceRolls.get(1) + "\n" +
+                "Total: " + sum);
+    }
+
+    private void checkIfWinOrLose() {
+
     }
 
     public Integer calculatePayoffs(){
@@ -243,7 +261,8 @@ public class Craps extends DiceGame implements GamblingGame{
     }
 
     public void bet(BetType betType, Integer amount){
-
+        Integer currentBetOfThisType = this.currentBets.get(betType);
+        this.currentBets.replace(betType, amount + currentBetOfThisType);
     }
 
     public void clearBets() {
@@ -255,66 +274,100 @@ public class Craps extends DiceGame implements GamblingGame{
     }
 
     public void actionSelection(){
-        if(getCurrentBet() == 0){
-            String inputBetType = this.console.getStringInput("What type of bet would you like to make?");
-            BetType chosenBetType = selectBetType(inputBetType);
-            if(chosenBetType != null){
-                if(isBetAvailable(chosenBetType)){
-                    Integer betAmount = null;
-                    while(betAmount == null){
-                        Integer inputBetAmount = this.console.getIntegerInput("How much would you like to bet?\n" +
-                                "Bet must be a multiple of " + getBetMultiple(chosenBetType) + "\n" +
-                                "Minimum bet is 5.\n" +
-                                "Max bet is " + getMaxBet(chosenBetType) + ".");
-                        if(validateBetAmount(chosenBetType, inputBetAmount)){
-                            betAmount = inputBetAmount;
-                            //place bet
-                        }else{
-                            System.out.println("Bet amount did not meet requirements.");
-                        }
-                    }
+        if(getCurrentBet() == 0){ //if there are no bets placed, do the following
+            gatherBetInformation();
 
-                }else{
-                    System.out.println("This bet is not available at this time.");
-                }
+        }else{ //if a bet has been placed
+            printCurrentBets();
+            String userInput = this.console.getStringInput("Do you want to roll or place further bets?");
+            if(userInput.equalsIgnoreCase("roll")){
+                this.setLastDiceRoll();
+            }else if(userInput.equalsIgnoreCase("bet")){
+                gatherBetInformation();
             }else{
-                System.out.println("Invalid bet type");
+                System.out.println("Clarify, roll or bet?");
+            }
+        }
+    }
+
+    private void gatherBetInformation() {
+        System.out.println("Balance: $" + this.player.getCurrentFunds());
+        String inputBetType = this.console.getStringInput("What type of bet would you like to make?");
+        BetType chosenBetType = selectBetType(inputBetType);
+
+        if(isValidBetType(chosenBetType)){
+            Integer betAmount = null;
+            while(betAmount == null){
+                Integer inputBetAmount = this.console.getIntegerInput("How much would you like to bet?\n" +
+                        "Bet must be a multiple of " + getBetMultiple(chosenBetType) + "\n" +
+                        "Minimum bet is 5.\n" +
+                        "Max total bet is " + getMaxBet(chosenBetType) + ".");
+                if(isValidBetAmount(chosenBetType, inputBetAmount)){
+                    betAmount = inputBetAmount;
+                    //place bet
+                    bet(chosenBetType, betAmount);
+                    this.player.subtractFromCurrentFunds(betAmount);
+                }else{
+                    System.out.println("Bet amount did not meet requirements.");
+                }
+            }
+        }
+    }
+
+    private void printCurrentBets() {
+        System.out.println("Balance: $" + this.player.getCurrentFunds());
+        System.out.println("Currently placed bets:");
+        for(BetType betType: BetType.values()){
+            if(this.currentBets.get(betType) != 0){
+                System.out.println(betType.toString() + " = $" + this.currentBets.get(betType).toString());
+            }
+        }
+    }
+
+    private boolean isValidBetType(BetType chosenBetType) {
+        if(chosenBetType != null){
+            if(isBetAvailable(chosenBetType)){
+                return true;
+            }else{
+                System.out.println("This bet is not available at this time.");
+                return false;
             }
         }else{
-            String userInput = this.console.getStringInput("Do you want to roll or place further bets?");
-
+            System.out.println("Invalid bet type");
+            return false;
         }
     }
 
     private Integer getBetMultiple(BetType chosenBetType) {
-        ArrayList<BetType> passLineOddsComeBetOddsBuy = new ArrayList<>();
+        //check these arrays
+        //ArrayList<BetType> passLineOddsComeBetOddsBuy = new ArrayList<>();
+        //ArrayList<BetType> dontPassOddsDontComeOddsLay = new ArrayList<>();
+        //ArrayList<BetType> placeBetsList = new ArrayList<>();
 
         if(this.currentPoint == 4 || this.currentPoint == 10){
-
-        }
-
-
-        /*
-        //returns for Odds bets
-        for(BetType oddsBet: this.oddsBetsList){
-            if(chosenBetType.equals(oddsBet)){
-                if(this.currentPoint == 5 || this.currentPoint == 9){
-                    return 2;
-                }else if(this.currentPoint == 6 || this.currentPoint == 8){
-                    return 5;
-                }
+            if(dontPassOddsDontComeOddsLay.contains(chosenBetType)){
+                return 2;
+            }else if(placeBetsList.contains(chosenBetType)){
+                return 5;
+            }
+        }else if(this.currentPoint == 5 || this.currentPoint == 9){
+            if(passLineOddsComeBetOddsBuy.contains(chosenBetType)){
+                return 2;
+            }else if(dontPassOddsDontComeOddsLay.contains(chosenBetType)){
+                return 3;
+            }else if(placeBetsList.contains(chosenBetType)){
+                return 5;
+            }
+        }else if(this.currentPoint == 6|| this.currentPoint == 8){
+            if(passLineOddsComeBetOddsBuy.contains(chosenBetType)){
+                return 5;
+            }else if(dontPassOddsDontComeOddsLay.contains(chosenBetType)){
+                return 6;
+            }else if(placeBetsList.contains(chosenBetType)){
+                return 6;
             }
         }
-        for(BetType oddsBet: this.oddsBetsList){
-            if(chosenBetType.equals(oddsBet)){
-                if(this.currentPoint == 5 || this.currentPoint == 9){
-                    return 2;
-                }else if(this.currentPoint == 6 || this.currentPoint == 8){
-                    return 5;
-                }
-            }
-        }
-        */
+
         return 1;
     }
 
@@ -373,14 +426,16 @@ public class Craps extends DiceGame implements GamblingGame{
         return true;
     }
 
-    private Boolean validateBetAmount(BetType chosenBetType, Integer chosenBetAmount) {
-        Integer amount = this.console.getIntegerInput("How much would you like to bet?");
+    private Boolean isValidBetAmount(BetType chosenBetType, Integer chosenBetAmount) {
         Integer limit = getMaxBet(chosenBetType);
+        Integer currentBetOfThisType = this.currentBets.get(chosenBetType);
+        Integer totalBet = currentBetOfThisType + chosenBetAmount;
+        Boolean isMultiple = totalBet % getBetMultiple(chosenBetType) == 0;
 
-        if(amount <= player.getCurrentFunds() && amount <= limit){
-            bet(chosenBetType, amount);
+        if(chosenBetAmount <= player.getCurrentFunds() && totalBet <= limit && totalBet >= this.minimumBet && isMultiple){
+            return true;
         }else{
-            System.out.println("Insufficient funds!");
+            return false;
         }
     }
 
@@ -433,6 +488,46 @@ public class Craps extends DiceGame implements GamblingGame{
         buyBetsList.add(BetType.BUY_9);
         buyBetsList.add(BetType.BUY_10);
 
+        passLineOddsComeBetOddsBuy.add(BetType.PASS_ODDS);
+        passLineOddsComeBetOddsBuy.add(BetType.COME_ODDS_4);
+        passLineOddsComeBetOddsBuy.add(BetType.COME_ODDS_5);
+        passLineOddsComeBetOddsBuy.add(BetType.COME_ODDS_6);
+        passLineOddsComeBetOddsBuy.add(BetType.COME_ODDS_8);
+        passLineOddsComeBetOddsBuy.add(BetType.COME_ODDS_9);
+        passLineOddsComeBetOddsBuy.add(BetType.COME_ODDS_10);
+        passLineOddsComeBetOddsBuy.add(BetType.BUY_4);
+        passLineOddsComeBetOddsBuy.add(BetType.BUY_5);
+        passLineOddsComeBetOddsBuy.add(BetType.BUY_6);
+        passLineOddsComeBetOddsBuy.add(BetType.BUY_8);
+        passLineOddsComeBetOddsBuy.add(BetType.BUY_9);
+        passLineOddsComeBetOddsBuy.add(BetType.BUY_10);
+
+        dontPassOddsDontComeOddsLay.add(BetType.DONT_PASS_ODDS);
+        dontPassOddsDontComeOddsLay.add(BetType.DONT_COME_ODDS_4);
+        dontPassOddsDontComeOddsLay.add(BetType.DONT_COME_ODDS_5);
+        dontPassOddsDontComeOddsLay.add(BetType.DONT_COME_ODDS_6);
+        dontPassOddsDontComeOddsLay.add(BetType.DONT_COME_ODDS_8);
+        dontPassOddsDontComeOddsLay.add(BetType.DONT_COME_ODDS_9);
+        dontPassOddsDontComeOddsLay.add(BetType.DONT_COME_ODDS_10);
+        dontPassOddsDontComeOddsLay.add(BetType.LAY_4);
+        dontPassOddsDontComeOddsLay.add(BetType.LAY_5);
+        dontPassOddsDontComeOddsLay.add(BetType.LAY_6);
+        dontPassOddsDontComeOddsLay.add(BetType.LAY_8);
+        dontPassOddsDontComeOddsLay.add(BetType.LAY_9);
+        dontPassOddsDontComeOddsLay.add(BetType.LAY_10);
+
+        placeBetsList.add(BetType.PLACE_WIN_4);
+        placeBetsList.add(BetType.PLACE_WIN_5);
+        placeBetsList.add(BetType.PLACE_WIN_6);
+        placeBetsList.add(BetType.PLACE_WIN_8);
+        placeBetsList.add(BetType.PLACE_WIN_9);
+        placeBetsList.add(BetType.PLACE_WIN_10);
+        placeBetsList.add(BetType.PLACE_LOSE_4);
+        placeBetsList.add(BetType.PLACE_LOSE_5);
+        placeBetsList.add(BetType.PLACE_LOSE_6);
+        placeBetsList.add(BetType.PLACE_LOSE_8);
+        placeBetsList.add(BetType.PLACE_LOSE_9);
+        placeBetsList.add(BetType.PLACE_LOSE_10);
 
         this.playingGame = true;
 

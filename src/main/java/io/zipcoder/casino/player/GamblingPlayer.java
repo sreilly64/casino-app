@@ -5,4 +5,6 @@ public interface GamblingPlayer {
     Integer getCurrentFunds();
 
     void addToCurrentFunds(Integer amount);
+
+    void subtractFromCurrentFunds(Integer amount);
 }

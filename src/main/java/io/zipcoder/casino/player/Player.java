@@ -20,4 +20,9 @@ public class Player implements GamblingPlayer {
     public void addToCurrentFunds(Integer amount) {
         this.currentFunds += amount;
     }
+
+    @Override
+    public void subtractFromCurrentFunds(Integer amount) {
+        this.currentFunds -= amount;
+    }
 }
