@@ -13,11 +13,11 @@ public class GoFish extends CardGame {
     List<Card> pcPlayerCard = new ArrayList<>();
     Player currentPlayer;
     Player opponentPlayer;
-    Player pcPlayer=new Player("PC",0);
+    Player pcPlayer = new Player("PC", 0);
     Player humanPlayer;
-    int humanPlayerBooks=0, pcPlayerBooks=0;
-    int booksCompleted=humanPlayerBooks+pcPlayerBooks;
-    List<Card> remainingDeck=new ArrayList<>();
+    int humanPlayerBooks = 0, pcPlayerBooks = 0;
+    int booksCompleted = humanPlayerBooks + pcPlayerBooks;
+    List<Card> remainingDeck = new ArrayList<>();
     List<Card> currentPlayerCards = new ArrayList<>();
 
     private Map<Player, List<Card>> playersHand() {
@@ -36,36 +36,37 @@ public class GoFish extends CardGame {
         Random random = new Random();
 
         for (int i = 0; i < numOfCards; i++) {
-            Card card1 = currentDeck.get(random.nextInt(currentDeck.size()));
-            pcPlayerCard.add(card1);
-            currentDeck.remove(card1);
 
-            Card card2 = currentDeck.get(random.nextInt(currentDeck.size()));
-            humanPlayerCard.add(card2);
-            currentDeck.remove(card2);
+            pcPlayerCard.add(currentDeck.get(0));
+            currentDeck.remove(currentDeck.get(0));
 
+            humanPlayerCard.add(currentDeck.get(0));
+            currentDeck.remove(currentDeck.get(0));
         }
-        remainingDeck = currentDeck;
+        this.remainingDeck = currentDeck;
     }
 
     @Override
     public void getWinner() {
         if (humanPlayerBooks > pcPlayerBooks) {
-            System.out.println(humanPlayerBooks);
-            System.out.println("Congratulations, The winner is " + humanPlayer.getName());
+            System.out.println("Your  Score : " + humanPlayerBooks);
+            System.out.println("pcPlayer  Score : " + pcPlayerBooks);
+            System.out.println("Congratulations, The winner is : " + humanPlayer.getName());
         } else {
-            System.out.println(pcPlayerBooks);
-            System.out.println("Congratulations, The winner is pcPlayer");
+            System.out.println("pcPlayer  Score : " + pcPlayerBooks);
+            System.out.println("Your  Score : " + humanPlayerBooks);
+            System.out.println(" The winner is pcPlayer, Nice Play !!!");
         }
     }
 
     public Boolean isHumanBookComplete() {
-        Boolean completed=false;
+
         Map<Card.Rank, Integer> rankMap = new HashMap<>();
-        for(Card card : humanPlayerCard) {
-            if(null != card) {
+        for (Card card : humanPlayerCard) {
+            if (null != card) {
                 if (rankMap.containsKey(card.getRank())) {
-                    rankMap.put(card.getRank(), rankMap.get(card.getRank()) + 1);
+                    Integer value = rankMap.get(card.getRank());
+                    rankMap.put(card.getRank(), value+1);
                 } else {
                     rankMap.put(card.getRank(), 1);
                 }
@@ -73,24 +74,28 @@ public class GoFish extends CardGame {
         }
 
         Set<Card.Rank> rankSet = rankMap.keySet();
-        for(Card.Rank rank : rankSet) {
-            if(rankMap.get(rank) == 4) {
-                humanPlayerBooks++;
-                completed =true;
-
+        Iterator<Card.Rank> iterator = rankSet.iterator();
+        while(iterator.hasNext()){
+            Card.Rank rank = iterator.next();
+            if (rankMap.get(rank) == 4) {
+                Iterator<Card> removeIterator = humanPlayerCard.iterator();
+                while(removeIterator.hasNext()){
+                    Card next = removeIterator.next();
+                    if(next.getRank().equals(rank)){
+                        removeIterator.remove();
+                    }
+                }
+                return true;
             }
-            else{
-
-            } completed =false;
         }
-       return false;
+        return false;
     }
 
     public Boolean isPcBookComplete() {
 
         Map<Card.Rank, Integer> rankMap = new HashMap<>();
-        for(Card card : pcPlayerCard) {
-            if(null != card) {
+        for (Card card : pcPlayerCard) {
+            if (null != card) {
                 if (rankMap.containsKey(card.getRank())) {
                     rankMap.put(card.getRank(), rankMap.get(card.getRank()) + 1);
                 } else {
@@ -100,9 +105,15 @@ public class GoFish extends CardGame {
         }
 
         Set<Card.Rank> rankSet = rankMap.keySet();
-        for(Card.Rank rank : rankSet) {
-            if(rankMap.get(rank) == 4) {
-                pcPlayerBooks++;
+        for (Card.Rank rank : rankSet) {
+            if (rankMap.get(rank) == 4) {
+                Iterator<Card> removeIterator = pcPlayerCard.iterator();
+                while(removeIterator.hasNext()){
+                    Card next = removeIterator.next();
+                    if(next.getRank().equals(rank)){
+                        removeIterator.remove();
+                    }
+                }
                 return true;
             }
         }
@@ -124,157 +135,158 @@ public class GoFish extends CardGame {
         return "Go Fish";
     }
 
-    private void letsPlayGoFish(Player currentPlayer, Player opponentPlayer){
-        opponentPlayer = ( opponentPlayer.getName().equals("PC") ? pcPlayer : humanPlayer);
+    private void letsPlayGoFish(Player hPlayer, Player pPlayer) {
+        this.opponentPlayer = (pPlayer.getName().equals("PC") ? pcPlayer : humanPlayer);
         Card card;
-        if(!currentPlayer.getName().equals("PC")){
-            currentPlayerCards=humanPlayerCard;
-        }else{
-            currentPlayerCards=pcPlayerCard;
+        if (!hPlayer.getName().equals("PC")) {
+            currentPlayerCards = humanPlayerCard;
+        } else {
+            currentPlayerCards = pcPlayerCard;
         }
 
+        Card cardAsked = createRandomCard(hPlayer);
+        boolean flag;
         do {
-            card = createRandomCard(currentPlayer);
-
-            if (askCard(opponentPlayer, card.rank)) {
-                if(!currentPlayer.getName().equals("PC")){
-                    humanPlayerCard.add(card);
-                    pcPlayerCard.remove(card);
-
+            if (null != cardAsked && askCard(opponentPlayer, cardAsked.rank)) {
+                flag = true;
+                if (!hPlayer.getName().equals("PC")) {
                     if (isHumanBookComplete()) {
                         humanPlayerBooks++;
                     }
-                }
-                else {
-                    pcPlayerCard.add(card);
-                    humanPlayerCard.remove(card);
+                } else {
                     if (isPcBookComplete()) {
                         pcPlayerBooks++;
                     }
                 }
 
-            } else{
+            } else {
+                flag = false;
                 break;
             }
+            cardAsked = createRandomCard(hPlayer);
+        } while (flag);
 
-        } while(askCard(opponentPlayer, card.rank));
-
-        Card drawnCard =drawTopCard();
-        do{
-            if(!currentPlayer.getName().equals("PC")){
-                humanPlayerCard.add(drawnCard);
-                currentPlayerCards=humanPlayerCard;
-                if (isHumanBookComplete()) {
-                    humanPlayerBooks++;
+        Card drawnCard = drawTopCard();
+        if(null != drawnCard) {
+            do {
+                if (!hPlayer.getName().equals("PC")) {
+                    humanPlayerCard.add(drawnCard);
+                    currentPlayerCards = humanPlayerCard;
+                    if (isHumanBookComplete()) {
+                        humanPlayerBooks++;
+                    }
+                } else {
+                    pcPlayerCard.add(drawnCard);
+                    currentPlayerCards = pcPlayerCard;
+                    if (isPcBookComplete()) {
+                        pcPlayerBooks++;
+                    }
                 }
-            }
-            else {
-                pcPlayerCard.add(drawnCard);
-                currentPlayerCards=pcPlayerCard;
-                if (isPcBookComplete()) {
-                    pcPlayerBooks++;
-                }
-            }
-            remainingDeck.remove(drawnCard);
-            drawnCard = drawTopCard();
-        } while(currentPlayerCards.contains(drawnCard));
+                remainingDeck.remove(drawnCard);
 
-        this.opponentPlayer = currentPlayer;
-        this.currentPlayer = nextTurn(currentPlayer);
+            } while (null != cardAsked && cardAsked.equals(drawnCard));
+        }
 
+        this.opponentPlayer = hPlayer;
+        this.currentPlayer = nextTurn(hPlayer);
+
+    }
+
+    private void takeAllSameCards(Player currentPlayer, Player opponentPlayer, Card.Rank rank) {
+        List<Card> opponentPlayerCards = playerHandMap.get(opponentPlayer);
+        List<Card> currentPlayerCards = playerHandMap.get(currentPlayer);
+
+        Iterator<Card> iterator = opponentPlayerCards.iterator();
+        while(iterator.hasNext()){
+            Card card = iterator.next();
+            if(rank.equals(card.getRank())){
+                currentPlayerCards.add(card);
+                iterator.remove();
+            }
+        }
     }
 
     @Override
     public void startGame(Player player) {
-        this.humanPlayer=player;
-        this.currentPlayer=player;
+        this.humanPlayer = player;
+        this.currentPlayer = player;
         dealCards(7);
         playersHand();
-        opponentPlayer = pcPlayer;
-        while((remainingDeck.size() > 0)) {
-            letsPlayGoFish( currentPlayer, opponentPlayer);
-            booksCompleted=this.humanPlayerBooks + this.pcPlayerBooks;
+        this.opponentPlayer = pcPlayer;
+
+        while (booksCompleted < 13 || (remainingDeck.size() != 0 && (pcPlayerCard.size() != 0 || humanPlayerCard.size() != 0))) {
+            letsPlayGoFish(currentPlayer, opponentPlayer);
+            booksCompleted = this.humanPlayerBooks + this.pcPlayerBooks;
+
+            if(pcPlayerCard.size() == 0 && humanPlayerCard.size()!= 0){
+                takeCardsFromDeck(pcPlayer);
+            }
+            else if(humanPlayerCard.size() == 0 && pcPlayerCard.size()!= 0){
+                takeCardsFromDeck(humanPlayer);
+            }
         }
+
         getWinner();
     }
 
-    private Boolean askCard(Player player, Card.Rank rank) {
+    private void takeCardsFromDeck(Player player) {
+        if(!player.getName().equals("PC")){
+            if(remainingDeck.size()>=7) {
+                for (int i = 0; i < 7; i++) {
+                    humanPlayerCard.add(remainingDeck.get(0));
+                    remainingDeck.remove(0);
+                }
+            }
+        }
+        else {
+            if(remainingDeck.size()>=7) {
+                for (int i = 0; i < 7; i++) {
+                    pcPlayerCard.add(remainingDeck.get(0));
+                    remainingDeck.remove(0);
+                }
+            }
+        }
+    }
+
+    private Boolean askCard(Player opponentplayer, Card.Rank rank) {
         Set<Map.Entry<Player, List<Card>>> setOfCards = playerHandMap.entrySet();
+
         for (Map.Entry<Player, List<Card>> entry : setOfCards)
-            if (entry.getKey().getName().equals(player.getName())) {
-                if (entry.getValue().contains(rank)) {
-                    return true;
+            if (entry.getKey().getName().equals(opponentplayer.getName())) {
+                List<Card> cardList = entry.getValue();
+                for(Card card : cardList){
+                    if (card.getRank().equals(rank)) {
+                        takeAllSameCards(currentPlayer, opponentPlayer, rank);
+                        return true;
+                    }
                 }
             }
         return false;
     }
 
     private Player nextTurn(Player currentPlayer) {
-        if (currentPlayer.getName().equals("PC")){
+        if (currentPlayer.getName().equals("PC")) {
             currentPlayer = humanPlayer;
-        }
-        else {
+        } else {
             currentPlayer = pcPlayer;
         }
         return currentPlayer;
     }
 
     private Card createRandomCard(Player currentPlayer) {
-        Card card;
-        //Random random = new Random();
-        //String s = selectRandomCardRank();
-//        card = getNewDeck().get(0);
-//        return card;
-      Random random = new Random();
-        card = currentPlayerCards.get(random.nextInt(currentPlayerCards.size()));
-        return card;
-    }
-
-    private static String selectRandomCardRank() {
-        String cardRank;
+        Card card = null;
         Random random = new Random();
-        int r = 1 + random.nextInt(13);
-        switch (r) {
-            case 1:
-                cardRank = "1";
-                break;
-            case 2:
-                cardRank = "2";
-                break;
-            case 3:
-                cardRank = "3";
-                break;
-            case 4:
-                cardRank = "4";
-                break;
-            case 5:
-                cardRank = "5";
-                break;
-            case 6:
-                cardRank = "6";
-                break;
-            case 7:
-                cardRank = "7";
-                break;
-            case 8:
-                cardRank = "8";
-                break;
-            case 9:
-                cardRank = "9";
-                break;
-            case 10:
-                cardRank = "10";
-                break;
-            case 11:
-                cardRank = "11";
-                break;
-            case 12:
-                cardRank = "12";
-                break;
-            default:
-                cardRank = "13";
-                break;
+        if(!currentPlayer.getName().equals("PC")) {
+            //card  = humanPlayerCard.get(0);
+            if(humanPlayerCard.size() > 0) {
+                card = humanPlayerCard.get(random.nextInt(humanPlayerCard.size()));
+            }
+        } else{
+            //card  = pcPlayerCard.get(0);
+            if(pcPlayerCard.size() > 0) {
+                card = pcPlayerCard.get(random.nextInt(pcPlayerCard.size()));
+            }
         }
-        return cardRank;
+        return card;
     }
 }
