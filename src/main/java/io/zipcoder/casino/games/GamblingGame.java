@@ -8,6 +8,8 @@ public interface GamblingGame {
 
     void bet(Integer amount);
 
+    void bet();
+
     void clearBets();
 
     void payout(Player player, Integer amount);

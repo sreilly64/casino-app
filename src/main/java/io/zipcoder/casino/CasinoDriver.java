@@ -6,13 +6,13 @@ import io.zipcoder.casino.utilities.Console;
 
 import java.util.*;
 
-public class CasinoDriver {
-    Console console;
-    Map<String, Player> playersList;
-    Player currentPlayer;
-    ArrayList<Game> gamesList;
+class CasinoDriver {
+    private final Console console;
+    private final Map<String, Player> playersList;
+    private Player currentPlayer;
+    private final ArrayList<Game> gamesList;
 
-    public CasinoDriver() {
+    CasinoDriver() {
         console = new Console(System.in, System.out);
         playersList = new HashMap<>();
         gamesList = new ArrayList<>();
@@ -24,7 +24,7 @@ public class CasinoDriver {
         startCasino();
     }
 
-    void startCasino() {
+    private void startCasino() {
         boolean inSession = true;
         console.println("Welcome to Ocean's Three Casino~");
         while (inSession) {
@@ -50,7 +50,7 @@ public class CasinoDriver {
         }
     }
 
-    void playerLogin() {
+    private void playerLogin() {
         if (getCurrentPlayer() == null) {
             String userInput = console.getStringInput("What's your name?");
             if(isReturningPlayer(userInput)) {
@@ -66,7 +66,7 @@ public class CasinoDriver {
         }
     }
 
-    Boolean isReturningPlayer(String name) {
+    private Boolean isReturningPlayer(String name) {
         if (playersList.containsKey(name)) {
             console.print("Welcome back "+name+". Your current funds are $"+playersList.get(name).getCurrentFunds()+
                               ". ");
@@ -77,7 +77,7 @@ public class CasinoDriver {
         }
     }
 
-    Player createPlayer(String name, Integer startingFunds) {
+    private Player createPlayer(String name, Integer startingFunds) {
         while(!isNameAvailable(name)) {
             name = console.getStringInput("Unfortunately, there is already an account with the name "
                 + name + ". Please enter a different name.");
@@ -86,19 +86,19 @@ public class CasinoDriver {
         return playersList.get(name);
     }
 
-    Boolean isNameAvailable(String name) {
+    private Boolean isNameAvailable(String name) {
         return (!playersList.containsKey(name)); //return true if name is not already in playersList
     }
 
-    void setCurrentPlayer(Player player) {
+    private void setCurrentPlayer(Player player) {
         this.currentPlayer = player;
     }
 
-    Player getCurrentPlayer() {
+    private Player getCurrentPlayer() {
         return currentPlayer;
     }
 
-    void playerLogout() {
+    private void playerLogout() {
         if (currentPlayer == null) {
             console.print("Nobody is logged in... ");
         } else {
@@ -107,13 +107,14 @@ public class CasinoDriver {
         }
     }
 
-    void printGamesList() {
+    private void printGamesList() {
         for (Game game : gamesList) {
             console.print("<"+game.getGameName()+"> | ");
         }
     }
 
-    void chooseGame() {
+    @SuppressWarnings ("ConstantConditions")
+    private void chooseGame() {
         printGamesList();
         if (currentPlayer != null) {
             String userInput = console.getStringInput("Which game do you want to play?");
