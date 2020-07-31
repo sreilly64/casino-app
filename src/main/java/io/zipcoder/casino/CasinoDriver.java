@@ -7,10 +7,10 @@ import io.zipcoder.casino.utilities.Console;
 import java.util.*;
 
 public class CasinoDriver {
-    Console console;
-    Map<String, Player> playersList;
-    Player currentPlayer;
-    ArrayList<Game> gamesList;
+    private final Console console;
+    private final Map<String, Player> playersList;
+    private Player currentPlayer;
+    private final ArrayList<Game> gamesList;
 
     public CasinoDriver() {
         console = new Console(System.in, System.out);
@@ -21,52 +21,61 @@ public class CasinoDriver {
         gamesList.add(new Craps());
         gamesList.add(new GoFish(Card.getNewDeck()));
         gamesList.add(new GoingToBoston());
-        startCasino();
+        //startCasino();
     }
 
-    void startCasino() {
+    private void startCasino() {
         boolean inSession = true;
         console.println("Welcome to Ocean's Three Casino~");
         while (inSession) {
             String userInput = console.getStringInput("Make a selection: <Login> | <Logout> | <Choose Game> | " +
                                                           "<Quit>");
-            switch (userInput) {
-                case "Login":
-                    playerLogin();
-                    break;
-                case "Logout":
-                    playerLogout();
-                    break;
-                case "Choose Game":
-                    chooseGame();
-                    break;
-                case "Quit":
-                    console.println("Come again soon!");
-                    inSession = false;
-                    break;
-                default:
-                    console.print("We didn't quite catch that. ");
-            }
+            inSession = chooseSelection(inSession, userInput);
         }
     }
 
-    void playerLogin() {
+    private Boolean chooseSelection(boolean inSession, String userInput) {
+        switch (userInput) {
+            case "Login":
+                playerLogin();
+                break;
+            case "Logout":
+                playerLogout();
+                break;
+            case "Choose Game":
+                chooseGame();
+                break;
+            case "Quit":
+                console.println("Come again soon!");
+                inSession = false;
+                break;
+            default:
+                console.print("We didn't quite catch that. ");
+        }
+        return inSession;
+    }
+
+    private void playerLogin() {
         if (getCurrentPlayer() == null) {
-            String userInput = console.getStringInput("What's your name?");
-            if(isReturningPlayer(userInput)) {
-                setCurrentPlayer(playersList.get(userInput));
-            } else {
-                Integer startingFunds = console.getIntegerInput("How much money do you want to start with?");
-                setCurrentPlayer(createPlayer(userInput, startingFunds));
-                console.println("You are all set, "+currentPlayer.getName()+"! Your current funds are $"+
-                                  currentPlayer.getCurrentFunds()+".");
-            }
+            userLogin();
         } else {
             console.println(getCurrentPlayer().getName()+" is already logged in.");
         }
     }
 
-    Boolean isReturningPlayer(String name) {
+    private void userLogin() {
+        String userInput = console.getStringInput("What's your name?");
+        if(isReturningPlayer(userInput)) {
+            setCurrentPlayer(playersList.get(userInput));
+        } else {
+            Integer startingFunds = console.getIntegerInput("How much money do you want to start with?");
+            setCurrentPlayer(createPlayer(userInput, startingFunds));
+            console.println("You are all set, "+currentPlayer.getName()+"! Your current funds are $"+
+                              currentPlayer.getCurrentFunds()+".");
+        }
+    }
+
+    private Boolean isReturningPlayer(String name) {
         if (playersList.containsKey(name)) {
             console.print("Welcome back "+name+". Your current funds are $"+playersList.get(name).getCurrentFunds()+
                               ". ");
@@ -77,7 +86,7 @@ public class CasinoDriver {
         }
     }
 
-    Player createPlayer(String name, Integer startingFunds) {
+    private Player createPlayer(String name, Integer startingFunds) {
         while(!isNameAvailable(name)) {
             name = console.getStringInput("Unfortunately, there is already an account with the name "
                 + name + ". Please enter a different name.");
@@ -113,23 +122,27 @@ public class CasinoDriver {
         }
     }
 
-    void chooseGame() {
+    private void chooseGame() {
         printGamesList();
         if (currentPlayer != null) {
-            String userInput = console.getStringInput("Which game do you want to play?");
-            Boolean choosingGame = choseGame(true, userInput);
-            while(choosingGame) {
-                console.println("We didn't quite catch that.");
-                printGamesList();
-                userInput = console.getStringInput("Which game did you want to play?");
-                choosingGame = choseGame(choosingGame, userInput);
-            }
+            userGameChoice();
         } else {
             console.println("Sorry, but you must be logged in to play.");
         }
     }
 
-    private Boolean choseGame(Boolean choosingGame, String gameName) {
+    private void userGameChoice() {
+        String userInput = console.getStringInput("Which game do you want to play?");
+        Boolean choosingGame = choseGame(true, userInput);
+        while(choosingGame) {
+            console.println("We didn't quite catch that.");
+            printGamesList();
+            userInput = console.getStringInput("Which game did you want to play?");
+            choosingGame = choseGame(choosingGame, userInput);
+        }
+    }
+
+    Boolean choseGame(Boolean choosingGame, String gameName) {
         for(Game game : gamesList) {
             if(gameName.equals(game.getGameName())) {
                 game.startGame(currentPlayer);

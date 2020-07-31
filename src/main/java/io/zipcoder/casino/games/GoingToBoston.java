@@ -48,11 +48,12 @@ public class GoingToBoston extends DiceGame{
             findWinner();
             String userInput = console.getStringInput("Play again? <Yes> | <No>");
             while(stillPlaying) {
-                if (userInput.equals("Yes")) {
+                if (userInput.equalsIgnoreCase("Yes")) {
                     stillPlaying = false;
-                } else if (userInput.equals("No")) {
+                } else if (userInput.equalsIgnoreCase("No")) {
                     quitGame();
                     stillPlaying = false;
+                    break;
                 } else {
                     console.println("We didn't quite catch that.");
                     userInput = console.getStringInput("Play again? <Yes> | <No>");
