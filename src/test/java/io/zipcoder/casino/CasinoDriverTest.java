@@ -42,22 +42,44 @@ public class CasinoDriverTest {
     }
 
     @Test
-    void startCasino() {
-
+    void chooseSelection() {
+        testCasinoDriver.chooseSelection(true, "N/A");
+        String expected = "We didn't quite catch that. ";
+        assertEquals(expected, outContent.toString());
     }
 
     @Test
+    void chooseSelection2() {
+        assertFalse(testCasinoDriver.chooseSelection(true, "Quit"));
+    }
+
+    @Test
+    void chooseSelection3() {
+        testCasinoDriver.setCurrentPlayer(testPlayer);
+        testCasinoDriver.chooseSelection(true, "Login");
+        String expected = "Lake is already logged in.\n";
+        assertEquals(expected, outContent.toString());
+    }
+
+
+    @Test
     void playerLogin() {
+        testCasinoDriver.setCurrentPlayer(testPlayer);
+        testCasinoDriver.playerLogin();
+        String expected = "Lake is already logged in.\n";
+        assertEquals(expected, outContent.toString());
     }
 
     @Test
     void isReturningPlayer() {
+        assertFalse(testCasinoDriver.isReturningPlayer("Lake"));
     }
 
     @Test
     void createPlayer() {
-
-
+        Player expected = testPlayer;
+        Player actual = testCasinoDriver.createPlayer("Lake", 1000);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -103,7 +125,8 @@ public class CasinoDriverTest {
     }
 
     @Test
-    void choseGame() {
-        assertFalse(testCasinoDriver.choseGame(true, "Black Jack"));
+    void chosenGame() {
+        testCasinoDriver.chosenGame(true, "Black Jack");
     }
+
 }

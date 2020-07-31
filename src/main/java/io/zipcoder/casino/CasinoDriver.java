@@ -21,10 +21,9 @@ public class CasinoDriver {
         gamesList.add(new Craps());
         gamesList.add(new GoFish(Card.getNewDeck()));
         gamesList.add(new GoingToBoston());
-        //startCasino();
     }
 
-    private void startCasino() {
+    void startCasino() {
         boolean inSession = true;
         console.println("Welcome to Ocean's Three Casino~");
         while (inSession) {
@@ -34,7 +33,7 @@ public class CasinoDriver {
         }
     }
 
-    private Boolean chooseSelection(boolean inSession, String userInput) {
+    Boolean chooseSelection(boolean inSession, String userInput) {
         switch (userInput) {
             case "Login":
                 playerLogin();
@@ -55,7 +54,7 @@ public class CasinoDriver {
         return inSession;
     }
 
-    private void playerLogin() {
+    void playerLogin() {
         if (getCurrentPlayer() == null) {
             userLogin();
         } else {
@@ -63,19 +62,16 @@ public class CasinoDriver {
         }
     }
 
-    private void userLogin() {
+    void userLogin() {
         String userInput = console.getStringInput("What's your name?");
         if(isReturningPlayer(userInput)) {
             setCurrentPlayer(playersList.get(userInput));
         } else {
-            Integer startingFunds = console.getIntegerInput("How much money do you want to start with?");
-            setCurrentPlayer(createPlayer(userInput, startingFunds));
-            console.println("You are all set, "+currentPlayer.getName()+"! Your current funds are $"+
-                              currentPlayer.getCurrentFunds()+".");
+            createAccount(userInput);
         }
     }
 
-    private Boolean isReturningPlayer(String name) {
+    Boolean isReturningPlayer(String name) {
         if (playersList.containsKey(name)) {
             console.print("Welcome back "+name+". Your current funds are $"+playersList.get(name).getCurrentFunds()+
                               ". ");
@@ -86,7 +82,14 @@ public class CasinoDriver {
         }
     }
 
-    private Player createPlayer(String name, Integer startingFunds) {
+    void createAccount(String userInput) {
+        Integer startingFunds = console.getIntegerInput("How much money do you want to start with?");
+        setCurrentPlayer(createPlayer(userInput, startingFunds));
+        console.println("You are all set, "+currentPlayer.getName()+"! Your current funds are $"+
+                            currentPlayer.getCurrentFunds()+".");
+    }
+
+    Player createPlayer(String name, Integer startingFunds) {
         while(!isNameAvailable(name)) {
             name = console.getStringInput("Unfortunately, there is already an account with the name "
                 + name + ". Please enter a different name.");
@@ -122,27 +125,22 @@ public class CasinoDriver {
         }
     }
 
-    private void chooseGame() {
+    void chooseGame() {
         printGamesList();
         if (currentPlayer != null) {
-            userGameChoice();
+            askGameChoice();
         } else {
             console.println("Sorry, but you must be logged in to play.");
         }
     }
 
-    private void userGameChoice() {
+    void askGameChoice() {
         String userInput = console.getStringInput("Which game do you want to play?");
-        Boolean choosingGame = choseGame(true, userInput);
-        while(choosingGame) {
-            console.println("We didn't quite catch that.");
-            printGamesList();
-            userInput = console.getStringInput("Which game did you want to play?");
-            choosingGame = choseGame(choosingGame, userInput);
-        }
+        Boolean choosingGame = chosenGame(true, userInput);
+        choseGame(choosingGame);
     }
 
-    Boolean choseGame(Boolean choosingGame, String gameName) {
+    Boolean chosenGame(Boolean choosingGame, String gameName) {
         for(Game game : gamesList) {
             if(gameName.equals(game.getGameName())) {
                 game.startGame(currentPlayer);
@@ -151,5 +149,15 @@ public class CasinoDriver {
             }
         }
         return choosingGame;
+    }
+
+    void choseGame(Boolean choosingGame) {
+        String userInput;
+        while(choosingGame) {
+            console.println("We didn't quite catch that.");
+            printGamesList();
+            userInput = console.getStringInput("Which game did you want to play?");
+            choosingGame = chosenGame(choosingGame, userInput);
+        }
     }
 }
