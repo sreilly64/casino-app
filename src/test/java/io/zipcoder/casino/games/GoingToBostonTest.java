@@ -39,11 +39,11 @@ public class GoingToBostonTest {
     @Test
     void printIntroduction() {
         testGTB.printIntroduction();
-        String expected = "Welcome to Going to Boston!\nHow to play: Each player has three turns.\nEach turn, a six-sided dice are " +
+        String expected = "Welcome to Going to Boston!\nHow to play: Each player has three turns.\nEach turn, six-sided dice are " +
                               "rolled and the number of the highest \ndie is added to the player's total.\nOn the first turn, the " +
-                              "player rolls three dice, on the second turn, the player rolls two, and on the last " +
-                              "turn, \nthe player rolls only one.\nThe player with the highest total wins!\n" +
-                              "< | > | < > | < | > | < > | < | > | < > | < | > | < >\n";
+                              "player rolls three dice. On the second turn, the player rolls two and on the last turn, \nthe " +
+                              "player rolls only one.\nThe player with the highest total wins!\n< | > | < > | < | > |" +
+                              " < > | < | > | < > | < | > | < >\n";
         assertEquals(expected, outContent.toString());
     }
 
