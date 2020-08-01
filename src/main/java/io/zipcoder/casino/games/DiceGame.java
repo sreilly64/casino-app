@@ -1,6 +1,5 @@
 package io.zipcoder.casino.games;
 
-import io.zipcoder.casino.games.Game;
 import io.zipcoder.casino.utilities.Console;
 
 import java.util.ArrayList;

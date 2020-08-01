@@ -33,14 +33,6 @@ public class CasinoDriverTest {
         System.setOut(originalOut);
     }
 
-
-    @Test
-    public void test() {
-        String expected = "";
-        //testCasinoDriver.();
-        assertEquals(expected, outContent.toString());
-    }
-
     @Test
     void chooseSelection() {
         testCasinoDriver.chooseSelection(true, "N/A");
