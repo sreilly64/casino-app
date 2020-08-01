@@ -1,16 +1,81 @@
 package io.zipcoder.casino.games;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 
 public class BlackJackTest {
-    @Before
-    public void setUp() throws Exception {
+
+    @BeforeEach
+    void setUp() {
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @Test
+    void drawTopCard() {
+    }
+
+    @Test
+    void resetGame() {
+    }
+
+    @Test
+    void quitGame() {
+    }
+
+    @Test
+    void getGameName() {
+    }
+
+    @Test
+    void startGame() {
+    }
+
+    @Test
+    void startPlay() {
+    }
+
+    @Test
+    void dealCard() {
+    }
+
+    @Test
+    void bet() {
+    }
+
+    @Test
+    void stand() {
+    }
+
+    @Test
+    void checkDealerForBlackJack() {
+    }
+
+    @Test
+    void getDealersPlay() {
+    }
+
+    @Test
+    void getWinner() {
+    }
+
+    @Test
+    void payout() {
+    }
+
+    @Test
+    void getCurrentBet() {
+    }
+
+    @Test
+    void clearBets() {
+    }
+
+    @Test
+    void testBet() {
+    }
+
+    @Test
+    void dealCards() {
     }
 }

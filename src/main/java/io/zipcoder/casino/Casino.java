@@ -5,6 +5,7 @@ import io.zipcoder.casino.utilities.Console;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public class Casino {
     static Console console = new Console(System.in, System.out);
     private static ArrayList<Card> playersHand= new ArrayList<>();
