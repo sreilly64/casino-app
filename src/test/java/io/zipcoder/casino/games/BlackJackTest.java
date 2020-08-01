@@ -38,10 +38,6 @@ public class BlackJackTest {
         System.setOut(originalOut);
     }
 
-    //    @Test
-    //    void printIntroduction() {
-    //    }
-
     @Test
     void resetGame_PlayersHand_NotNull() {
         assertNull(testBJ.playersHand);
@@ -80,6 +76,13 @@ public class BlackJackTest {
     }
 
     @Test
+    void resetGame_Winne_Null() {
+        testBJ.winner = testPlayer;
+        testBJ.resetGame();
+        assertNull(testBJ.winner);
+    }
+
+    @Test
     void quitGame() {
         testBJ.quitGame();
         assertFalse(testBJ.playing);
@@ -92,17 +95,13 @@ public class BlackJackTest {
         assertEquals(expected, actual);
     }
 
-//    @Test
-//    void startGame() {
-//    }
-//
     @Test
     void startPlay() {
         testBJ.playersHand = new ArrayList<>();
         testBJ.playersHand.add(new Card(HEARTS, JACK));
         testBJ.playersHand.add(new Card(HEARTS, QUEEN));
         testBJ.playersHand.add(new Card(HEARTS, KING));
-        testBJ.startPlay(true);
+        testBJ.playRound(true);
         String expected = "You have: JACK of HEARTS | QUEEN of HEARTS | KING of HEARTS | \nYou bust!\n";
         assertEquals(expected, outContent.toString());
     }
@@ -142,18 +141,6 @@ public class BlackJackTest {
         String expected = "You stand.\n";
         assertEquals(expected, outContent.toString());
     }
-//
-//    @Test
-//    void checkDealerForBlackJack() {
-//    }
-//
-//    @Test
-//    void getDealersPlay() {
-//    }
-//
-//    @Test
-//    void getWinner() {
-//    }
 
     @Test
     void payout_Winner() {
@@ -194,6 +181,15 @@ public class BlackJackTest {
     }
 
     @Test
+    void printWinner_NoOne() {
+        testBJ.resetGame();
+        testBJ.winner = new Player("No one", 0);
+        testBJ.printWinner();
+        String expected = "No one wins\n";
+        assertEquals(expected, outContent.toString());
+    }
+
+    @Test
     void getCurrentBet() {
         testBJ.bet(10);
         Integer expected = 10;
@@ -213,12 +209,6 @@ public class BlackJackTest {
         assertNull(testBJ.currentBet);
     }
 
-//    @Test
-//    void dealCards() {
-//    }
-//
-
-
     @Test
     void printPlayersHand() {
         testBJ.playersHand = new ArrayList<>();
@@ -228,14 +218,6 @@ public class BlackJackTest {
         assertEquals(expected, outContent.toString());
     }
 
-//    @Test
-//    void getNextMove() {
-//    }
-//
-//    @Test
-//    void getChoices() {
-//    }
-//
     @Test
     void getScore() {
         testBJ.playersHand = new ArrayList<>();
@@ -284,5 +266,55 @@ public class BlackJackTest {
         Integer expected = 14;
         Integer actual = testBJ.getScoreWithAce(testBJ.playersHand);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void checkForNatural_Player() {
+
+    }
+
+    @Test
+    void checkForNatural_Dealer() {
+
+    }
+
+    @Test
+    void checkForNatural_BothAndNeither() {
+
+    }
+
+    @Test
+    void checkHand() {
+
+    }
+
+    @Test
+    void checkAce() {
+
+    }
+
+    @Test
+    void checkTen() {
+
+    }
+
+    @Test
+    void printIntroduction() {
+    }
+
+    @Test
+    void getDealersPlay() {
+    }
+
+    @Test
+    void getWinner() {
+    }
+
+    @Test
+    void getChoices() {
+    }
+
+    @Test
+    void printChoices() {
     }
 }

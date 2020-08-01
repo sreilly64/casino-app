@@ -35,9 +35,10 @@ public class BlackJack extends CardGame implements GamblingGame{
     public void resetGame() {
         playersHand = new ArrayList<>();
         dealersHand = new ArrayList<>();
+        winner = null;
         clearBets();
         dealCard(playersHand, 2);
-        dealCard(dealersHand, 1);
+        dealCard(dealersHand, 2);
     }
 
     int getValidBet(Integer userInput) {
@@ -70,16 +71,22 @@ public class BlackJack extends CardGame implements GamblingGame{
             resetGame();
             int userInt = console.getIntegerInput("You can bet a minimum of $2 and a maximum of $500. How much would " +
                                                         "you like to bet?");
-            bet(getValidBet(userInt));
-            startPlay(inPlay);
-            getDealersPlay();
-            getWinner();
-            payout(player, currentBet);
+            startRound(currentPlayer, inPlay, userInt);
 
             String userInput = console.getStringInput("Play again? <Yes> | <No>");
             isStillPlaying(userInput);
-
         }
+    }
+
+    void startRound(Player player, boolean inPlay, int userInt) {
+        bet(getValidBet(userInt));
+        if(!checkForNatural()) {
+            playRound(inPlay);
+            getDealersPlay();
+            getWinner();
+        }
+        printWinner();
+        payout(player, currentBet);
     }
 
     void isStillPlaying(String userInput) {
@@ -96,7 +103,7 @@ public class BlackJack extends CardGame implements GamblingGame{
         }
     }
 
-    public void startPlay(boolean inPlay) {
+    public void playRound(boolean inPlay) {
         while (inPlay) {
             printPlayersHand();
             if (getScore(playersHand) > 21) {
@@ -142,10 +149,12 @@ public class BlackJack extends CardGame implements GamblingGame{
 
     List<String> getChoices(Integer currentScore) {
         List<String> choices = new ArrayList<>();
-        if (currentScore <= 21) {
+        if (currentScore <= 11) {
             choices.add("Hit");
             choices.add("Stand");
-        } //else if () { }
+        } else if (currentScore <= 21) {
+            choices.add("Hit");
+        }
         return choices;
     }
 
@@ -212,7 +221,13 @@ public class BlackJack extends CardGame implements GamblingGame{
         int playerScore = getScoreWithAce(playersHand);
         int dealerScore = getScoreWithAce(dealersHand);
         if (playerScore > 21) {
-
+            winner = dealer;
+        } else if (playerScore > dealerScore) {
+            winner = currentPlayer;
+        } else if (playerScore < dealerScore) {
+            winner = dealer;
+        } else if (playerScore == dealerScore) {
+            winner = new Player("No one", 0);
         }
 
     }
@@ -238,7 +253,7 @@ public class BlackJack extends CardGame implements GamblingGame{
     public void payout(Player player, Integer amount) {
         if (winner == player) {
             player.addToCurrentFunds(amount);
-        } else {
+        } else if (winner == dealer) {
             player.subtractFromCurrentFunds(amount);
         }
     }
@@ -253,16 +268,50 @@ public class BlackJack extends CardGame implements GamblingGame{
         currentBet = null;
     }
 
-    @Override
-    void dealCards(Integer numOfCards) {}
-
-    Boolean checkDealerForBlackJack() {
-        return false;
-    }
-
     void getDealersPlay() {
         if (getScore(dealersHand) < 16) {
             hit(dealersHand);
         }
     }
+
+    Boolean checkForNatural() {
+        if (checkHand(playersHand) && !checkHand(dealersHand)) {
+            winner = currentPlayer;
+            currentBet = currentBet * 2;
+            return true;
+        } else if (!checkHand(playersHand) && checkHand(dealersHand)) {
+            winner = dealer;
+            return true;
+        } else if (checkHand(playersHand) && checkHand(dealersHand)) {
+            winner = new Player("No one", 0);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    Boolean checkHand(ArrayList<Card> hand) {
+        return checkAce(hand, 0) && checkTen(hand, 1) ||
+                checkAce(hand, 1) && checkTen(hand, 0);
+    }
+
+    Boolean checkAce(ArrayList<Card> hand, Integer index) {
+        return hand.get(index).getRank() == ACE;
+    }
+
+    Boolean checkTen(ArrayList<Card> hand, Integer index) {
+        switch(hand.get(index).getRank()) {
+            case TEN:
+            case JACK:
+            case QUEEN:
+            case KING:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    void dealCards(Integer numOfCards) {}
 }
