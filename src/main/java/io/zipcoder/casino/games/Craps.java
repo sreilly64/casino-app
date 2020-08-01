@@ -39,7 +39,7 @@ public class Craps extends DiceGame implements GamblingGame{
 
     }
 
-    public void setUpBetsMap() {
+    public void initializeBetsMap() {
         TreeMap<BetType, Integer> output = new TreeMap<BetType, Integer>();
         for(BetType bet: BetType.values()){
             output.put(bet, 0);
@@ -87,9 +87,6 @@ public class Craps extends DiceGame implements GamblingGame{
         this.diceRolls = rollDice(2);
         this.diceTotal = this.diceRolls.get(0) + this.diceRolls.get(1);
         printDiceRolls();
-        setActiveBets();
-        checkIfBetsAreAffected();
-        assessGamePhase();
     }
 
     protected void printDiceRolls() {
@@ -217,9 +214,7 @@ public class Craps extends DiceGame implements GamblingGame{
     }
 
     protected void processLayBets(BetType betType) {
-        Integer indexOfLosingPoint = layBetsList.indexOf(betType);
-        Integer losingPoint = this.pointPhaseValues.get(indexOfLosingPoint);
-        if(this.diceTotal == losingPoint){
+        if(this.diceTotal == calculateTargetPoint(betType, layBetsList)){
             betLoses(betType);
         }else if(this.diceTotal == 7){
             betWins(betType);
@@ -227,9 +222,7 @@ public class Craps extends DiceGame implements GamblingGame{
     }
 
     protected void processBuyBets(BetType betType) {
-        Integer indexOfWinningPoint = buyBetsList.indexOf(betType);
-        Integer winningPoint = this.pointPhaseValues.get(indexOfWinningPoint);
-        if(this.diceTotal == winningPoint){
+        if(this.diceTotal == calculateTargetPoint(betType, buyBetsList)){
             betWins(betType);
         }else if(this.diceTotal == 7){
             betLoses(betType);
@@ -238,9 +231,7 @@ public class Craps extends DiceGame implements GamblingGame{
 
     protected void processPlaceBets(BetType betType) {
         if(!this.comeOutPhase){ //only "on" during the Point phase
-            Integer indexOfWinningPoint = placeBetsList.indexOf(betType);
-            Integer winningPoint = this.pointPhaseValues.get(indexOfWinningPoint);
-            if(this.diceTotal == winningPoint){
+            if(this.diceTotal == calculateTargetPoint(betType, placeBetsList)){
                 betWins(betType);
             }else if(this.diceTotal == 7){
                 betLoses(betType);
@@ -249,7 +240,7 @@ public class Craps extends DiceGame implements GamblingGame{
     }
 
     protected void processDontComeOddsBets(BetType betType) {
-        if(this.diceTotal.equals(calculateTargetPoint(betType, dontComeOddsList))){ //if bet loses
+        if(this.diceTotal == calculateTargetPoint(betType, dontComeOddsList)){ //if bet loses
             betLoses(betType);
         }else if(this.diceTotal == 7){ //if bet wins
             betWins(betType);
@@ -257,7 +248,7 @@ public class Craps extends DiceGame implements GamblingGame{
     }
 
     protected void processDontComePointBets(BetType betType) {
-        if(this.diceTotal.equals(calculateTargetPoint(betType, dontComeBetsList))){ //if bet loses
+        if(this.diceTotal == calculateTargetPoint(betType, dontComeBetsList)){ //if bet loses
             betLoses(betType);
         }else if(this.diceTotal == 7){ //if bet wins
             betWins(betType);
@@ -265,7 +256,7 @@ public class Craps extends DiceGame implements GamblingGame{
     }
 
     protected void processComeOddsBets(BetType betType) {
-        if(this.diceTotal.equals(calculateTargetPoint(betType, comeOddsBetsList))){ //if bet wins
+        if(this.diceTotal == calculateTargetPoint(betType, comeOddsBetsList)){ //if bet wins
             betWins(betType);
         }else if(this.diceTotal == 7){ //if bet loses
             betLoses(betType);
@@ -273,7 +264,7 @@ public class Craps extends DiceGame implements GamblingGame{
     }
 
     protected void processComePointBets(BetType betType) {
-        if(this.diceTotal.equals(calculateTargetPoint(betType, comeBetsList))){ //if bet wins
+        if(this.diceTotal == calculateTargetPoint(betType, comeBetsList)){ //if bet wins
             betWins(betType);
         }else if(this.diceTotal == 7){ //if bet loses
             betLoses(betType);
@@ -310,6 +301,7 @@ public class Craps extends DiceGame implements GamblingGame{
     protected void transferBetToPoint(BetType betType, ArrayList<BetType> targetBets) {
         Integer indexOfNewComeBet = pointPhaseValues.indexOf(this.diceTotal);
         BetType newComeBet = targetBets.get(indexOfNewComeBet);
+
         Integer amountBetOnCome = this.currentBets.get(betType);
         this.currentBets.replace(newComeBet, amountBetOnCome);
         clearBet(betType);
@@ -345,6 +337,11 @@ public class Craps extends DiceGame implements GamblingGame{
                 betLoses(betType);
             }
         }
+    }
+
+    public void initializePayoffMap(){
+        TreeMap<BetType, Integer> payoffMap = new TreeMap<>();
+
     }
 
     public Integer calculatePayoff(BetType betType){
@@ -502,7 +499,10 @@ public class Craps extends DiceGame implements GamblingGame{
         checkForGameQuit(userInput);
 
         if(userInput.equalsIgnoreCase("roll")){
-            this.rollTheDice();
+            setActiveBets();
+            rollTheDice();
+            checkIfBetsAreAffected();
+            assessGamePhase();
         }else if(userInput.equalsIgnoreCase("bet")){
             getUserInputBetType();
         }else{
@@ -668,7 +668,7 @@ public class Craps extends DiceGame implements GamblingGame{
 
     public void startGame(Player player) {
         setPlayer(player);
-        setUpBetsMap();
+        initializeBetsMap();
         initializeBetArrayLists();
         initializeFields();
 

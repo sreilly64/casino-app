@@ -9,8 +9,6 @@ import org.junit.Test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-
 public class CrapsTest {
     @Before
     public void setUp() throws Exception {
@@ -26,7 +24,7 @@ public class CrapsTest {
         //given
         Craps craps = new Craps();
         Player player = new Player("Bob", 1000);
-        craps.setUpBetsMap();
+        craps.initializeBetsMap();
 
         //when
         Map<BetType, Integer> expected = new LinkedHashMap<>();
