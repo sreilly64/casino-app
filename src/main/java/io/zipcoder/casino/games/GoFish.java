@@ -23,7 +23,12 @@ public class GoFish extends CardGame {
     private Map<Player, List<Card>> playersHand() {
         playerHandMap.put(humanPlayer, humanPlayerCard);
         playerHandMap.put(pcPlayer, pcPlayerCard);
+        System.out.println("Your cards are : ");
+        System.out.println(humanPlayerCard);
+        System.out.println("The PC cards are : ");
+        System.out.println(pcPlayerCard);
         return playerHandMap;
+
     }
 
     public GoFish(List<Card> currentDeck) {
@@ -44,6 +49,7 @@ public class GoFish extends CardGame {
             currentDeck.remove(currentDeck.get(0));
         }
         this.remainingDeck = currentDeck;
+
     }
 
     @Override
@@ -214,6 +220,7 @@ public class GoFish extends CardGame {
         playersHand();
         this.opponentPlayer = pcPlayer;
 
+
         while (booksCompleted < 13 || (remainingDeck.size() != 0 && (pcPlayerCard.size() != 0 || humanPlayerCard.size() != 0))) {
             letsPlayGoFish(currentPlayer, opponentPlayer);
             booksCompleted = this.humanPlayerBooks + this.pcPlayerBooks;
@@ -248,11 +255,11 @@ public class GoFish extends CardGame {
         }
     }
 
-    private Boolean askCard(Player opponentplayer, Card.Rank rank) {
+    private Boolean askCard(Player opponentPlayer, Card.Rank rank) {
         Set<Map.Entry<Player, List<Card>>> setOfCards = playerHandMap.entrySet();
 
         for (Map.Entry<Player, List<Card>> entry : setOfCards)
-            if (entry.getKey().getName().equals(opponentplayer.getName())) {
+            if (entry.getKey().getName().equals(opponentPlayer.getName())) {
                 List<Card> cardList = entry.getValue();
                 for(Card card : cardList){
                     if (card.getRank().equals(rank)) {
@@ -279,7 +286,8 @@ public class GoFish extends CardGame {
         if(!currentPlayer.getName().equals("PC")) {
             //card  = humanPlayerCard.get(0);
             if(humanPlayerCard.size() > 0) {
-                card = humanPlayerCard.get(random.nextInt(humanPlayerCard.size()));
+                System.out.println("Choose a card to ask the opponent");
+                //card = humanPlayerCard.get(random.nextInt(humanPlayerCard.size()));
             }
         } else{
             //card  = pcPlayerCard.get(0);
