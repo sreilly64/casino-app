@@ -7,10 +7,10 @@ import io.zipcoder.casino.utilities.Console;
 import java.util.*;
 
 public class CasinoDriver {
-    private final Console console;
-    private final Map<String, Player> playersList;
-    private Player currentPlayer;
-    private final ArrayList<Game> gamesList;
+    final Console console;
+    final Map<String, Player> playersList;
+    Player currentPlayer;
+    final ArrayList<Game> gamesList;
 
     CasinoDriver() {
         console = new Console(System.in, System.out);
@@ -23,7 +23,7 @@ public class CasinoDriver {
         gamesList.add(new GoingToBoston());
     }
 
-    private void startCasino() {
+    void startCasino() {
         boolean inSession = true;
         console.println("Welcome to Ocean's Three Casino~");
         while (inSession) {
@@ -98,19 +98,19 @@ public class CasinoDriver {
         return playersList.get(name);
     }
 
-    private Boolean isNameAvailable(String name) {
+    Boolean isNameAvailable(String name) {
         return (!playersList.containsKey(name)); //return true if name is not already in playersList
     }
 
-    private void setCurrentPlayer(Player player) {
+    void setCurrentPlayer(Player player) {
         this.currentPlayer = player;
     }
 
-    private Player getCurrentPlayer() {
+    Player getCurrentPlayer() {
         return currentPlayer;
     }
 
-    private void playerLogout() {
+    void playerLogout() {
         if (currentPlayer == null) {
             console.print("Nobody is logged in... ");
         } else {
@@ -119,14 +119,14 @@ public class CasinoDriver {
         }
     }
 
-    private void printGamesList() {
+    void printGamesList() {
         for (Game game : gamesList) {
             console.print("<"+game.getGameName()+"> | ");
         }
     }
 
     @SuppressWarnings ("ConstantConditions")
-    private void chooseGame() {
+    void chooseGame() {
         printGamesList();
         if (currentPlayer != null) {
             askGameChoice();

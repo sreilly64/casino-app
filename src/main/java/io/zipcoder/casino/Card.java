@@ -13,7 +13,7 @@ public class Card {
     public final Rank rank;
     public final Suit suit;
 
-    private Card(Suit s, Rank r) {
+    public Card(Suit s, Rank r) {
         suit = s;
         rank = r;
     }

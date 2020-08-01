@@ -35,11 +35,6 @@ public class Craps extends DiceGame implements GamblingGame{
     }
 
     @Override
-    public void bet() {
-
-    }
-
-    @Override
     public void clearBets() {
 
     }
