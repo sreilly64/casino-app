@@ -39,11 +39,17 @@ public class GoingToBostonTest {
     @Test
     void printIntroduction() {
         testGTB.printIntroduction();
-        String expected = "Welcome to Going to Boston!\nHow to play: Each player has three turns.\nEach turn, six-sided dice are " +
-                              "rolled and the number of the highest \ndie is added to the player's total.\nOn the first turn, the " +
-                              "player rolls three dice. On the second turn, the player rolls two and on the last turn, \nthe " +
-                              "player rolls only one.\nThe player with the highest total wins!\n< | > | < > | < | > |" +
-                              " < > | < | > | < > | < | > | < >\n";
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \n" +
+                              "                     Welcome to Going to Boston!                     \n" +
+                              "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \n" +
+                              "                             How to play:                              \n" +
+                              "  ⚀ Each player has three turns.\n" +
+                              "  ⚁ Each turn, six-sided dice are rolled and the number of the highest \n" +
+                              "    die is added to the player's total.\n" +
+                              "  ⚂ On the first turn, the player rolls three dice. \n" +
+                              "  ⚃ On the second turn, the player rolls two and on the last turn, \n" +
+                              "    the player rolls only one.\n" + "  ⚄ The player with the highest total wins!\n" +
+                              "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \n";
         assertEquals(expected, outContent.toString());
     }
 
@@ -174,7 +180,7 @@ public class GoingToBostonTest {
         testGTB.createNPCs(3);
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 20;
-        String expected = "< | > | < > | < | > | < > | < | > | < > | < | > | < >\n" +
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \n" +
                               "You scored 20. \n" + "Jyothi scored 15. \n" + "Lake scored 15. \n" +
                               "Shane scored 15. \n";
         testGTB.printScores();

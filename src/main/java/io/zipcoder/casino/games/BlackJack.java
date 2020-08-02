@@ -10,7 +10,6 @@ import static io.zipcoder.casino.Card.Rank.ACE;
 public class BlackJack extends CardGame implements GamblingGame{
     public static final String gameName = "Black Jack";
     Integer currentBet;
-    Integer miniBet;
     ArrayList<Card> dealersHand;
     ArrayList<Card> playersHand;
     Player currentPlayer;
@@ -69,8 +68,8 @@ public class BlackJack extends CardGame implements GamblingGame{
         boolean inPlay = true;
         while (playing) {
             resetGame();
-            int userInt = console.getIntegerInput("You can bet a minimum of $2 and a maximum of $500. " +
-             "How much would you like to bet?");
+            int userInt = console.getIntegerInput("Your current funds are $"+currentPlayer.getCurrentFunds()+"."
+            + " You can bet a minimum of $2 and a maximum of $500. How much would you like to bet?");
             startRound(currentPlayer, inPlay, userInt);
             String userInput = console.getStringInput("Play again? <Yes> | <No>");
             isStillPlaying(userInput);
@@ -81,9 +80,7 @@ public class BlackJack extends CardGame implements GamblingGame{
         bet(getValidBet(userInt));
         if(!checkForNatural()) {
             playRound(inPlay);
-            if (getScore(playersHand)<=21) {
-                getDealersPlay();
-            }
+            if (getScoreWithAce(playersHand)<=21) {getDealersPlay();}
             getWinner();
         }
         printWinner();
@@ -108,12 +105,10 @@ public class BlackJack extends CardGame implements GamblingGame{
         console.println("The dealer has one card faced down and "+dealersHand.get(1).toString()+".");
         while (inPlay) {
             printPlayersHand();
-            if (getScore(playersHand) > 21) {
+            if (getScoreWithAce(playersHand) > 21) {
                 console.println("\nYou bust!");
                 inPlay = false;
-            } else {
-                inPlay = getNextMove();
-            }
+            } else {inPlay = getNextMove();}
         }
     }
 
@@ -144,7 +139,7 @@ public class BlackJack extends CardGame implements GamblingGame{
 
     void printChoices() {
         console.print("\nYou can: ");
-        for (String choice : getChoices(getScore(playersHand))) {
+        for (String choice : getChoices(getScoreWithAce(playersHand))) {
             console.print(choice+" | ");
         }
     }
@@ -165,7 +160,7 @@ public class BlackJack extends CardGame implements GamblingGame{
         for (Card card : hand) {
             switch(card.getRank()) {
                 case ACE:
-                    currentScore+=1;
+                    currentScore+=11;
                     break;
                 case TWO:
                     currentScore+=2;
@@ -224,13 +219,13 @@ public class BlackJack extends CardGame implements GamblingGame{
         int dealerScore = getScoreWithAce(dealersHand);
         if (playerScore > 21) {
             winner = dealer;
-        } else if (dealerScore > 21 && playerScore <= 21) {
+        } else if (dealerScore > 21) {
             winner = currentPlayer;
         } else if (playerScore > dealerScore) {
             winner = currentPlayer;
         } else if (playerScore < dealerScore) {
             winner = dealer;
-        } else if (playerScore == dealerScore) {
+        } else {
             winner = new Player("No one", 0);
         }
     }
@@ -243,8 +238,8 @@ public class BlackJack extends CardGame implements GamblingGame{
         int score = getScore(hand);
         for (Card card : hand) {
             if (card.getRank() == ACE) {
-                int scoreWithAce = score + 10;
-                if (scoreWithAce > score && scoreWithAce <= 21) {
+                int scoreWithAce = score - 10;
+                if (score > 21 && scoreWithAce <= 21) {
                     score = scoreWithAce;
                 }
             }
@@ -256,8 +251,10 @@ public class BlackJack extends CardGame implements GamblingGame{
     public void payout(Player player, Integer amount) {
         if (winner == player) {
             player.addToCurrentFunds(amount);
+            console.println("You won $"+amount+". Your current funds are $"+player.getCurrentFunds()+".");
         } else if (winner == dealer) {
             player.subtractFromCurrentFunds(amount);
+            console.println("You lost $"+amount+". Your current funds are $"+player.getCurrentFunds()+".");
         }
     }
 
@@ -289,33 +286,43 @@ public class BlackJack extends CardGame implements GamblingGame{
 
     Boolean checkForNatural() {
         if (checkHand(playersHand) && !checkHand(dealersHand)) {
-            winner = currentPlayer;
-            currentBet = currentBet * 2;
-            printPlayersHand();
-            console.println("You have a Black Jack!");
-            return true;
+            return checkForPlayerNatural();
         } else if (!checkHand(playersHand) && checkHand(dealersHand)) {
-            winner = dealer;
-            printPlayersHand();
-            console.print(dealer.getName()+" has: ");
-            for (Card card : dealersHand) {
-                console.print(card.toString()+" | ");
-            }
-            console.println("\n"+dealer.getName()+" has a Black Jack!");
-            return true;
+            return checkForDealerNatural();
         } else if (checkHand(playersHand) && checkHand(dealersHand)) {
-            winner = new Player("No one", 0);
-            printPlayersHand();
-            console.print(dealer.getName()+" has: ");
-            for (Card card : dealersHand) {
-                console.print(card.toString()+" | ");
-            }
-            console.println("\n"+"You and "+dealer.getName()+" have Black Jack!");
-            return true;
+            return checkForBothNatural();
         } else {
             return false;
         }
+    }
 
+    Boolean checkForPlayerNatural() {
+        winner = currentPlayer;
+        currentBet = currentBet * 2;
+        printBothHands();
+        console.println("\nYou have Black Jack!");
+        return true;
+    }
+
+    Boolean checkForDealerNatural() {
+        winner = dealer;
+        printBothHands();
+        console.println("\n"+dealer.getName()+" has Black Jack!");
+        return true;
+    }
+
+    Boolean checkForBothNatural() {
+        winner = new Player("No one", 0);
+        printBothHands();
+        console.println("\n"+"You and "+dealer.getName()+" have Black Jack!");
+        return true;
+    }
+
+    void printDealersHand() {
+        console.print("\n" + dealer.getName() + " has: ");
+        for(Card card : dealersHand) {
+            console.print(card.toString() + " | ");
+        }
     }
 
     Boolean checkHand(ArrayList<Card> hand) {
@@ -337,6 +344,11 @@ public class BlackJack extends CardGame implements GamblingGame{
             default:
                 return false;
         }
+    }
+
+    void printBothHands() {
+        printPlayersHand();
+        printDealersHand();
     }
 
     @Override
