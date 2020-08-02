@@ -27,7 +27,6 @@ public class GoingToBoston extends DiceGame{
             "\n                     Welcome to Going to Boston!                     \n"+ //21,21
             diceBorder+
             "\n                             How to play:                              "+ //29,30
-          //"\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅"+
             "\n  \u2680 Each player has three turns."+
             "\n  \u2681 Each turn, six-sided dice are rolled and the number of the highest "+
             "\n    die is added to the player's total."+
@@ -67,7 +66,7 @@ public class GoingToBoston extends DiceGame{
         printIntroduction();
         while (playing) {
             playGame();
-            String userInput = console.getStringInput("Play again? <Yes> | <No>");
+            String userInput = console.getStringInput("Play again? Yes | No");
             isStillPlaying(userInput);
         }
     }

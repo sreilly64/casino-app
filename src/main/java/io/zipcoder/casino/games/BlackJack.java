@@ -5,6 +5,8 @@ import io.zipcoder.casino.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static io.zipcoder.casino.Card.Rank.ACE;
 public class BlackJack extends CardGame implements GamblingGame{
@@ -16,6 +18,11 @@ public class BlackJack extends CardGame implements GamblingGame{
     Player dealer = new Player("Dealer", 0);
     Player winner;
     Boolean playing;
+    String heartsCardUnicode =
+        "\uD83C\uDCA0 \uD83C\uDCB1 \uD83C\uDCB2 \uD83C\uDCB3 \uD83C\uDCB4 \uD83C\uDCB5 \uD83C\uDCB6 \uD83C\uDCB7 " +
+            "\uD83C\uDCB8 \uD83C\uDCBA \uD83C\uDCBB \uD83C\uDCBC \uD83C\uDCBD \uD83C\uDCBE \uD83C\uDCDF \uD83C\uDCA0 ";
+    String heartsCardBorder = IntStream.range(0, 2).mapToObj(i -> heartsCardUnicode).collect(Collectors.joining(
+        "\u2660 \u2665 \u2666 \u2663 "));
 
     public BlackJack(List<Card> currentDeck) {
         super(currentDeck);
@@ -23,11 +30,18 @@ public class BlackJack extends CardGame implements GamblingGame{
     }
 
     void printIntroduction() {
-        console.println(
-            "Welcome to Going to Boston!\nHow to play: Each player has three turns.\nEach turn, six-sided dice are " +
-                "rolled and the number of the highest \ndie is added to the player's total.\nOn the first turn, the " +
-                "player rolls three dice. On the second turn, the player rolls two and on the last turn, \nthe " +
-                "player rolls only one.\nThe player with the highest total wins!\n< | > | < > | < | > | < > | < | > | < > | < | > | < >");
+        console.print(heartsCardBorder+
+                            "\n                    Welcome to the Black Jack table!                  \n" + //20,19
+                            heartsCardBorder+
+                            "\n                             How to play:                              "+ //29,30
+                            "\n  \uD83C\uDCB1 The player must enter an amount to bet."+
+                            "\n  \uD83C\uDCB2 Both the player and Dealer are dealt two cards to start."+
+                            "\n  \uD83C\uDCB3 On their turn, the player can \"Hit\" to add a card to their hand" +
+                            "\n    or \"Stand\" if the total points in their hand are greater than ten."+
+                            "\n  \uD83C\uDCB4 Dealer takes their turn afterwards. " +
+                            "\n  \uD83C\uDCB5 The hand score closest to 21 without a \"Bust\" (a score higher than " +
+                            "21)" +
+                            "\n    wins and takes the player's bet.\n");
     }
 
     @Override
@@ -40,11 +54,11 @@ public class BlackJack extends CardGame implements GamblingGame{
         dealCard(dealersHand, 2);
     }
 
-    int getValidBet(Integer userInput) {
-        while(!(userInput >= 2 && userInput <= 500) || (userInput > currentPlayer.getCurrentFunds())) {
-            userInput = console.getIntegerInput("Enter a valid bet.");
+    int getValidBet(Integer userInt) {
+        while(!(userInt >= 2 && userInt <= 500) || (userInt > currentPlayer.getCurrentFunds())) {
+            userInt = console.getIntegerInput("Enter a valid bet.");
         }
-        return userInput;
+        return userInt;
     }
 
     @Override
@@ -66,18 +80,21 @@ public class BlackJack extends CardGame implements GamblingGame{
     public void startGame(Player player) {
         currentPlayer = player;
         boolean inPlay = true;
+        printIntroduction();
         while (playing) {
             resetGame();
+            console.println(heartsCardBorder);
             int userInt = console.getIntegerInput("Your current funds are $"+currentPlayer.getCurrentFunds()+"."
-            + " You can bet a minimum of $2 and a maximum of $500. How much would you like to bet?");
+            + " You can bet a minimum of $2 and a maximum of $500.\nHow much would you like to bet?");
             startRound(currentPlayer, inPlay, userInt);
-            String userInput = console.getStringInput("Play again? <Yes> | <No>");
-            isStillPlaying(userInput);
+            String userInput = console.getStringInput("Play again? Yes | No");
+            isPlaying(userInput);
         }
     }
 
     void startRound(Player player, boolean inPlay, int userInt) {
         bet(getValidBet(userInt));
+        console.println(heartsCardBorder);
         if(!checkForNatural()) {
             playRound(inPlay);
             if (getScoreWithAce(playersHand)<=21) {getDealersPlay();}
@@ -87,7 +104,7 @@ public class BlackJack extends CardGame implements GamblingGame{
         payout(player, currentBet);
     }
 
-    void isStillPlaying(String userInput) {
+    void isPlaying(String userInput) {
         while(true) {
             if (userInput.equalsIgnoreCase("Yes")) {
                 break;
@@ -114,9 +131,13 @@ public class BlackJack extends CardGame implements GamblingGame{
 
     void printPlayersHand() {
         console.print("You have: ");
+        String[] cards = new String[playersHand.size()];
+        int index = 0;
         for (Card card : playersHand) {
-            console.print(card.toString()+" | ");
+            cards[index] = card.toString();
+            index++;
         }
+        console.print(playersHand.stream().map(String::valueOf).collect(Collectors.joining(" | "))+".");
     }
 
     Boolean getNextMove() {
@@ -128,31 +149,29 @@ public class BlackJack extends CardGame implements GamblingGame{
     Boolean isStillInPlay(String userInput) {
         switch(userInput) {
             case "Hit":
+            case "hit":
                 hit(playersHand);
                 break;
             case "Stand":
+            case "stand":
                 stand();
                 return false;
+            default:
         }
         return true;
     }
 
     void printChoices() {
-        console.print("\nYou can: ");
-        for (String choice : getChoices(getScoreWithAce(playersHand))) {
-            console.print(choice+" | ");
-        }
+        console.print("\nYou can: "+getChoices(getScoreWithAce(playersHand)));
     }
 
-    List<String> getChoices(Integer currentScore) {
-        List<String> choices = new ArrayList<>();
+    String getChoices(Integer currentScore) {
         if (currentScore <= 11) {
-            choices.add("Hit");
+            return "Hit.";
         } else if (currentScore <= 21) {
-            choices.add("Hit");
-            choices.add("Stand");
+            return "Hit | Stand.";
         }
-        return choices;
+        return null;
     }
 
     Integer getScore(ArrayList<Card> hand) {
@@ -215,6 +234,7 @@ public class BlackJack extends CardGame implements GamblingGame{
 
     @Override
     public void getWinner() {
+        console.println(heartsCardBorder);
         int playerScore = getScoreWithAce(playersHand);
         int dealerScore = getScoreWithAce(dealersHand);
         if (playerScore > 21) {
@@ -269,10 +289,13 @@ public class BlackJack extends CardGame implements GamblingGame{
     }
 
     void getDealersPlay() {
+        console.println(heartsCardBorder);
         int index = 2;
         getDealerHit(index);
         if (getScore(dealersHand) > 21) {
             console.println(dealer.getName()+" bust.");
+        } else if (getScore(dealersHand) >= 17) {
+            console.println(dealer.getName()+" stands.");
         }
     }
 
@@ -282,6 +305,7 @@ public class BlackJack extends CardGame implements GamblingGame{
             console.println(dealer.getName()+" hit and drew "+dealersHand.get(index).toString()+".");
             index++;
         }
+
     }
 
     Boolean checkForNatural() {
@@ -320,9 +344,13 @@ public class BlackJack extends CardGame implements GamblingGame{
 
     void printDealersHand() {
         console.print("\n" + dealer.getName() + " has: ");
-        for(Card card : dealersHand) {
-            console.print(card.toString() + " | ");
+        String[] cards = new String[dealersHand.size()];
+        int index = 0;
+        for (Card card : dealersHand) {
+            cards[index] = card.toString();
+            index++;
         }
+        console.print(dealersHand.stream().map(String::valueOf).collect(Collectors.joining(" | "))+".");
     }
 
     Boolean checkHand(ArrayList<Card> hand) {
