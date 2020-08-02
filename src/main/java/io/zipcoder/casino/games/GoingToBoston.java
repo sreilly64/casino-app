@@ -4,6 +4,7 @@ import io.zipcoder.casino.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 public class GoingToBoston extends DiceGame{
     public static String gameName = "Going to Boston";
@@ -13,6 +14,8 @@ public class GoingToBoston extends DiceGame{
     Player currentPlayer;
     int playerScore;
     Boolean playing;
+    String diceUnicode = "\u2680 \u2681 \u2682 \u2683 \u2684 \u2685 ";
+    String diceBorder = IntStream.range(0, 6).mapToObj(i -> diceUnicode).collect(Collectors.joining(""));
 
     public GoingToBoston() {
         super();
@@ -20,11 +23,18 @@ public class GoingToBoston extends DiceGame{
     }
 
     void printIntroduction() {
-        console.println(
-            "Welcome to Going to Boston!\nHow to play: Each player has three turns.\nEach turn, six-sided dice are " +
-                "rolled and the number of the highest \ndie is added to the player's total.\nOn the first turn, the " +
-                "player rolls three dice. On the second turn, the player rolls two and on the last turn, \nthe " +
-                "player rolls only one.\nThe player with the highest total wins!\n< | > | < > | < | > | < > | < | > | < > | < | > | < >");
+        console.println(diceBorder+
+            "\n                     Welcome to Going to Boston!                     \n"+ //21,21
+            diceBorder+
+            "\n                             How to play:                              "+ //29,30
+          //"\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅"+
+            "\n  \u2680 Each player has three turns."+
+            "\n  \u2681 Each turn, six-sided dice are rolled and the number of the highest "+
+            "\n    die is added to the player's total."+
+            "\n  \u2682 On the first turn, the player rolls three dice. "+
+            "\n  \u2683 On the second turn, the player rolls two and on the last turn, "+
+            "\n    the player rolls only one."+
+            "\n  \u2684 The player with the highest total wins!\n"+diceBorder);
     }
 
     @Override
@@ -100,7 +110,7 @@ public class GoingToBoston extends DiceGame{
     }
 
     void getRolls(int numOfDie, String name) {
-        console.println("< | > | < > | < | > | < > | < | > | < > | < | > | < >");
+        console.println(diceBorder);
         for (int i = 0; i < highestRolls.length; i++) {
             ArrayList<Integer> rolls = rollDice(numOfDie);
             printRolls(numOfDie, name, rolls);
@@ -112,7 +122,9 @@ public class GoingToBoston extends DiceGame{
     void printRolls(int numOfDie, String name, ArrayList<Integer> rolls) {
         console.print("Roll "+ numOfDie +" | "+ name +" rolled");
         for (Integer roll : rolls) {
-            console.print(" "+roll);
+            console.print( " "+roll);
+            //Dice.printDice(Dice.valueOf((Integer)roll));
+            //console.print(" "+Dice.valueOf(roll));
         }
     }
 
@@ -130,7 +142,7 @@ public class GoingToBoston extends DiceGame{
     }
 
     void printScores() {
-        console.println("< | > | < > | < | > | < > | < | > | < > | < | > | < >");
+        console.println(diceBorder);
         console.println("You scored "+playerScore+". ");
         nPCScores.forEach ((npc, score) -> console.println(npc.getName()+" scored "+score+". "));
     }

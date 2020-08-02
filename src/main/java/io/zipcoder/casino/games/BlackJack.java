@@ -8,7 +8,7 @@ import java.util.List;
 
 import static io.zipcoder.casino.Card.Rank.ACE;
 public class BlackJack extends CardGame implements GamblingGame{
-    public static String gameName = "Black Jack";
+    public static final String gameName = "Black Jack";
     Integer currentBet;
     Integer miniBet;
     ArrayList<Card> dealersHand;
@@ -42,7 +42,7 @@ public class BlackJack extends CardGame implements GamblingGame{
     }
 
     int getValidBet(Integer userInput) {
-        while(!(userInput >= 2 && userInput <= 500) && currentPlayer.getCurrentFunds() > userInput) {
+        while(!(userInput >= 2 && userInput <= 500) || (userInput > currentPlayer.getCurrentFunds())) {
             userInput = console.getIntegerInput("Enter a valid bet.");
         }
         return userInput;
@@ -69,10 +69,9 @@ public class BlackJack extends CardGame implements GamblingGame{
         boolean inPlay = true;
         while (playing) {
             resetGame();
-            int userInt = console.getIntegerInput("You can bet a minimum of $2 and a maximum of $500. How much would " +
-                                                        "you like to bet?");
+            int userInt = console.getIntegerInput("You can bet a minimum of $2 and a maximum of $500. " +
+             "How much would you like to bet?");
             startRound(currentPlayer, inPlay, userInt);
-
             String userInput = console.getStringInput("Play again? <Yes> | <No>");
             isStillPlaying(userInput);
         }
@@ -82,7 +81,9 @@ public class BlackJack extends CardGame implements GamblingGame{
         bet(getValidBet(userInt));
         if(!checkForNatural()) {
             playRound(inPlay);
-            getDealersPlay();
+            if (getScore(playersHand)<=21) {
+                getDealersPlay();
+            }
             getWinner();
         }
         printWinner();
@@ -103,7 +104,8 @@ public class BlackJack extends CardGame implements GamblingGame{
         }
     }
 
-    public void playRound(boolean inPlay) {
+    void playRound(boolean inPlay) {
+        console.println("The dealer has one card faced down and "+dealersHand.get(1).toString()+".");
         while (inPlay) {
             printPlayersHand();
             if (getScore(playersHand) > 21) {
@@ -151,9 +153,9 @@ public class BlackJack extends CardGame implements GamblingGame{
         List<String> choices = new ArrayList<>();
         if (currentScore <= 11) {
             choices.add("Hit");
-            choices.add("Stand");
         } else if (currentScore <= 21) {
             choices.add("Hit");
+            choices.add("Stand");
         }
         return choices;
     }
@@ -222,6 +224,8 @@ public class BlackJack extends CardGame implements GamblingGame{
         int dealerScore = getScoreWithAce(dealersHand);
         if (playerScore > 21) {
             winner = dealer;
+        } else if (dealerScore > 21 && playerScore <= 21) {
+            winner = currentPlayer;
         } else if (playerScore > dealerScore) {
             winner = currentPlayer;
         } else if (playerScore < dealerScore) {
@@ -229,11 +233,10 @@ public class BlackJack extends CardGame implements GamblingGame{
         } else if (playerScore == dealerScore) {
             winner = new Player("No one", 0);
         }
-
     }
 
     void printWinner() {
-        console.println(winner.getName()+" wins");
+        console.println(winner.getName()+" wins.");
     }
 
     Integer getScoreWithAce(ArrayList<Card> hand) {
@@ -269,8 +272,18 @@ public class BlackJack extends CardGame implements GamblingGame{
     }
 
     void getDealersPlay() {
-        if (getScore(dealersHand) < 16) {
-            hit(dealersHand);
+        int index = 2;
+        getDealerHit(index);
+        if (getScore(dealersHand) > 21) {
+            console.println(dealer.getName()+" bust.");
+        }
+    }
+
+    void getDealerHit(int index) {
+        while (getScore(dealersHand) < 17) {
+            dealCard(dealersHand, 1);
+            console.println(dealer.getName()+" hit and drew "+dealersHand.get(index).toString()+".");
+            index++;
         }
     }
 
@@ -278,12 +291,26 @@ public class BlackJack extends CardGame implements GamblingGame{
         if (checkHand(playersHand) && !checkHand(dealersHand)) {
             winner = currentPlayer;
             currentBet = currentBet * 2;
+            printPlayersHand();
+            console.println("You have a Black Jack!");
             return true;
         } else if (!checkHand(playersHand) && checkHand(dealersHand)) {
             winner = dealer;
+            printPlayersHand();
+            console.print(dealer.getName()+" has: ");
+            for (Card card : dealersHand) {
+                console.print(card.toString()+" | ");
+            }
+            console.println("\n"+dealer.getName()+" has a Black Jack!");
             return true;
         } else if (checkHand(playersHand) && checkHand(dealersHand)) {
             winner = new Player("No one", 0);
+            printPlayersHand();
+            console.print(dealer.getName()+" has: ");
+            for (Card card : dealersHand) {
+                console.print(card.toString()+" | ");
+            }
+            console.println("\n"+"You and "+dealer.getName()+" have Black Jack!");
             return true;
         } else {
             return false;
