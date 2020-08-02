@@ -96,6 +96,22 @@ public class Craps extends DiceGame implements GamblingGame{
         this.diceTotal = diceTotal;
     }
 
+    public Boolean getPlayingGame() {
+        return playingGame;
+    }
+
+    public Integer getMinimumBet() {
+        return minimumBet;
+    }
+
+    public HashMap<BetType, Runnable> getBetProcessingMap() {
+        return betProcessingMap;
+    }
+
+    public HashMap<BetType, Double> getPayoffMap() {
+        return payoffMap;
+    }
+
     public void rollTheDice(){
         this.diceRolls = rollDice(2);
         this.diceTotal = this.diceRolls.get(0) + this.diceRolls.get(1);
@@ -411,10 +427,15 @@ public class Craps extends DiceGame implements GamblingGame{
         }
     }
 
-    public void rollOrBet() {
+    private void rollOrBet() {
         String userInput = this.console.getStringInput("Do you want to roll or place further bets?");
         checkForGameQuit(userInput);
+        if(playingGame){ //this is to prevent the msg from displaying if the user inputs "quit"
+            processBetOrRoll(userInput);
+        }
+    }
 
+    public void processBetOrRoll(String userInput) {
         if(userInput.equalsIgnoreCase("roll")){
             setActiveBets();
             rollTheDice();
@@ -423,12 +444,6 @@ public class Craps extends DiceGame implements GamblingGame{
         }else if(userInput.equalsIgnoreCase("bet")){
             getUserInputBetType();
         }else{
-            clarifyInput();
-        }
-    }
-
-    public void clarifyInput() {
-        if(playingGame){//this is to prevent the msg from displaying if the user inputs "quit"
             System.out.println("Clarify, roll or bet?");
             rollOrBet();
         }
@@ -438,7 +453,7 @@ public class Craps extends DiceGame implements GamblingGame{
         if(this.comeOutPhase){
             System.out.println("Come Out roll");
         }else{
-            System.out.println("The Point is ON:" + this.currentPoint);
+            System.out.println("The Point is ON: " + this.currentPoint);
         }
     }
 
