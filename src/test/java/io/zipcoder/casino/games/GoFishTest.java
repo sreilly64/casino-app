@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,20 +53,62 @@ public class GoFishTest {
     }
 
     @Test
-    public void startGameTest() {
+    public void quitStartGameTest(){
+        gofish.isPlaying = false;
+        gofish.startGame(humanPlayer);
+    }
+
+    @Test
+    public void startGameTestNotReadyToPlay(){
+        String input = "n";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+        gofish.startGame(humanPlayer);
+    }
+
+    @Test
+    public void startGameTestWillingToPlay() throws Exception {
+        String input = "Y";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
         GoFish mockFish = mock(GoFish.class);
-        doNothing().when(mockFish).letsPlayGoFish(humanPlayer, pcPlayer);
+        //mockFish.isPlaying = true;
+        doNothing().when(mockFish).startPlay(humanPlayer);
         doCallRealMethod().when(mockFish).startGame(humanPlayer);
-        mockFish.booksCompleted = 13;
-        mockFish.remainingDeck = new ArrayList<Card>(1);
-        mockFish.pcPlayerCard = new ArrayList<Card>(2);
-        mockFish.humanPlayerCard = new ArrayList<Card>(3);
 
         mockFish.startGame(humanPlayer);
     }
 
     @Test
-    void letsPlayGoFishTestHumanPlayer() {
+    public void startGameTestThrowsException() throws Exception {
+        String input = "Y";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        GoFish mockFish = mock(GoFish.class);
+        mockFish.isPlaying = true;
+        doThrow(new Exception("test")).when(mockFish).startPlay(humanPlayer);
+        doCallRealMethod().when(mockFish).startGame(humanPlayer);
+
+        mockFish.startGame(humanPlayer);
+    }
+
+    @Test
+    public void startPlayTest() throws Exception {
+        GoFish mockFish = mock(GoFish.class);
+        doNothing().when(mockFish).letsPlayGoFish(humanPlayer, pcPlayer);
+        doCallRealMethod().when(mockFish).startPlay(humanPlayer);
+        mockFish.booksCompleted = 13;
+        mockFish.remainingDeck = new ArrayList<Card>(1);
+        mockFish.pcPlayerCard = new ArrayList<Card>(2);
+        mockFish.humanPlayerCard = new ArrayList<Card>(3);
+
+        mockFish.startPlay(humanPlayer);
+    }
+
+    @Test
+    void letsPlayGoFishTestHumanPlayer() throws Exception {
         Card asked = new Card(SPADES,FIVE);
         GoFish mockFish = mock(GoFish.class);
         when(mockFish.selectCardFromHand(humanPlayer)).thenReturn(asked);
@@ -80,7 +124,7 @@ public class GoFishTest {
     }
 
     @Test
-    void letsPlayGoFishTestPcPlayer() {
+    void letsPlayGoFishTestPcPlayer() throws Exception {
         Card asked = new Card(SPADES,FIVE);
         GoFish mockFish = mock(GoFish.class);
         when(mockFish.selectCardFromHand(pcPlayer)).thenReturn(asked);
@@ -187,7 +231,7 @@ public class GoFishTest {
     }
 
     @Test
-    public void selectCardFromHandTest() {
+    public void selectCardFromHandTest() throws Exception {
         Card card = gofish.selectCardFromHand(pcPlayer);
         Assert.assertNotNull(card);
     }

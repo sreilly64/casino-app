@@ -20,12 +20,14 @@ public class GoFish extends CardGame {
     int booksCompleted = humanPlayerBooks + pcPlayerBooks;
     List<Card> remainingDeck = new ArrayList<>();
     List<Card> currentPlayerCards = new ArrayList<>();
+    boolean isPlaying = false;
 
     public GoFish(List<Card> currentDeck) {
         super(currentDeck);
         this.humanPlayer = new Player("DEFAULT_PLAYER", 0);
         this.pcPlayer = new Player("PC", 0);
         this.currentPlayer = humanPlayer;
+        this.isPlaying = true;
     }
 
     @Override
@@ -52,6 +54,25 @@ public class GoFish extends CardGame {
 
     @Override
     public void startGame(Player player) {
+        while(isPlaying) {
+            System.out.println("Welcome to Go Fish Game, please enter 'Y' to continue or 'N' to exit out of the game");
+
+            String quitString = new Scanner(System.in).next();
+            if ("N".equalsIgnoreCase(quitString)) {
+                break;
+            } else {
+                try {
+                    startPlay(player);
+                } catch(Exception ex){
+                    System.out.println("See you again!!!");
+                    break;
+                }
+            }
+        }
+    }
+
+    void startPlay(Player player) throws Exception {
+
         this.humanPlayer = player;
         this.currentPlayer = player;
         System.out.println("Hello " + humanPlayer.getName() + "!!");
@@ -74,9 +95,10 @@ public class GoFish extends CardGame {
         }
 
         getWinner();
+
     }
 
-    void letsPlayGoFish(Player hPlayer, Player pPlayer) {
+    void letsPlayGoFish(Player hPlayer, Player pPlayer) throws Exception {
         this.opponentPlayer = (pPlayer.getName().equals("PC") ? pcPlayer : humanPlayer);
 
         if (!hPlayer.getName().equals("PC")) {
@@ -95,11 +117,11 @@ public class GoFish extends CardGame {
     }
 
 
-    /*
-   @param - currentPlayer
-   currentPlayer chooses a random card from his hand
-*/
-    Card selectCardFromHand(Player currentPlayer) {
+
+
+   //currentPlayer chooses a  card from his hand to ask
+
+    Card selectCardFromHand(Player currentPlayer) throws Exception {
         Card card = null;
         Random random = new Random();
         if (!currentPlayer.getName().equals("PC")) {
@@ -108,11 +130,11 @@ public class GoFish extends CardGame {
                 System.out.println("The cards in you hand are : ");
                 System.out.print(this.currentPlayerCards);
                 System.out.println();
-                System.out.println("Do you want to exit the game, Enter Y or N ");
+                System.out.println("Do you want to continue the game, Enter Y or N ");
 
                 String quitString = new Scanner(System.in).next();
-                if ("Y".equalsIgnoreCase(quitString)) {
-                    quitGame();
+                if ("N".equalsIgnoreCase(quitString)) {
+                    throw new Exception("See you again");
                 }
                 System.out.println("Choose a card to ask the opponent");
                 card = getUserSelectedCard(card);
@@ -185,7 +207,7 @@ public class GoFish extends CardGame {
     }
 
     //Check if the opponent has the card asked.
-    private Card checkWithOpponent(Player hPlayer) {
+    private Card checkWithOpponent(Player hPlayer) throws Exception {
         Card cardAsked = selectCardFromHand(hPlayer);
         boolean flag;
         do {
@@ -384,7 +406,8 @@ public class GoFish extends CardGame {
 
     @Override
     public void quitGame() {
-        CasinoDriver casinoDriver = new CasinoDriver();
+        this.isPlaying = false;
+
     }
 
     @Override
