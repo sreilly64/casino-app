@@ -3,6 +3,7 @@ package io.zipcoder.casino;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Card {
 
@@ -16,10 +17,11 @@ public class Card {
     public final Rank rank;
     public final Suit suit;
 
-    private Card(Suit s, Rank r) {
+    public Card(Suit s, Rank r) {
         suit= s;
         rank= r;
     }
+
 
     public Rank getRank() {
         return rank;
@@ -27,6 +29,24 @@ public class Card {
 
     public Suit getSuit() {
         return suit;
+    }
+
+    static public Boolean lookupRank(String rank) {
+        try {
+            Card.Rank.valueOf(rank);
+            return true;
+        } catch (IllegalArgumentException ex) {
+            return false;
+        }
+    }
+
+    static public Boolean lookupSuit(String suit) {
+        try {
+            Card.Suit.valueOf(suit);
+            return true;
+        } catch (IllegalArgumentException ex) {
+            return false;
+        }
     }
 
     public static List<Card> getNewDeck(){
@@ -42,9 +62,23 @@ public class Card {
 
     @Override
     public String toString() {
-        return "Card{" +
+        return "Card [" +
                 "rank=" + rank.name() +
                 ", suit=" + suit.name() +
-                '}';
+                ']';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return rank == card.rank &&
+                suit == card.suit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rank, suit);
     }
 }
