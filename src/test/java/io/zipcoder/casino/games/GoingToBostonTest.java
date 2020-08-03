@@ -140,7 +140,7 @@ public class GoingToBostonTest {
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 20;
         testGTB.findWinner();
-        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nYou won!\n";
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nLake won!\n";
         assertEquals(expected, outContent.toString());
     }
 
@@ -151,7 +151,7 @@ public class GoingToBostonTest {
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 15;
         testGTB.findWinner();
-        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nYou tied!\n";
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nLake tied!\n";
         assertEquals(expected, outContent.toString());
     }
 
@@ -162,7 +162,7 @@ public class GoingToBostonTest {
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 14;
         testGTB.findWinner();
-        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nYou lost...\n";
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nLake lost...\n";
         assertEquals(expected, outContent.toString());
     }
 
@@ -173,7 +173,7 @@ public class GoingToBostonTest {
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 20;
         String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \n" +
-                              "You scored 20. \n" + "Jyothi scored 15. \n" + "Lake scored 15. \n" +
+                              "Lake scored 20. \n" + "Jyothi scored 15. \n" + "Lake scored 15. \n" +
                               "Shane scored 15. \n";
         testGTB.printScores();
         String actual = outContent.toString();
