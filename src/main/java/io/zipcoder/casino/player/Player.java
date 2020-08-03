@@ -1,6 +1,7 @@
 package io.zipcoder.casino.player;
 
 import java.util.Objects;
+
 public class Player implements GamblingPlayer {
     private String name;
     private Integer currentFunds;
