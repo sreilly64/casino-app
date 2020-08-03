@@ -39,19 +39,17 @@ public class GoingToBostonTest {
     @Test
     void printIntroduction() {
         testGTB.printIntroduction();
-        String expected = "Welcome to Going to Boston!\nHow to play: Each player has three turns.\nEach turn, six-sided dice are " +
-                              "rolled and the number of the highest \ndie is added to the player's total.\nOn the first turn, the " +
-                              "player rolls three dice. On the second turn, the player rolls two and on the last turn, \nthe " +
-                              "player rolls only one.\nThe player with the highest total wins!\n< | > | < > | < | > |" +
-                              " < > | < | > | < > | < | > | < >\n";
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \n" +
+                              "                     Welcome to Going to Boston!                     \n" +
+                              "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \n" +
+                              "                             How to play:                              \n" +
+                              "  ⚀ Each player has three turns.\n" +
+                              "  ⚁ Each turn, six-sided dice are rolled and the number of the highest \n" +
+                              "    die is added to the player's total.\n" +
+                              "  ⚂ On the first turn, the player rolls three dice. \n" +
+                              "  ⚃ On the second turn, the player rolls two and on the last turn, \n" +
+                              "    the player rolls only one.\n" + "  ⚄ The player with the highest total wins!\n";
         assertEquals(expected, outContent.toString());
-    }
-
-    @Test
-    void getNumberOfOpponents() {
-        Integer expected = 3;
-        Integer actual = testGTB.getNumberOfOpponents(3);
-        assertEquals(expected, actual);
     }
 
     @Test
@@ -92,7 +90,7 @@ public class GoingToBostonTest {
     void printRolls() {
         ArrayList<Integer> testRolls = new ArrayList<>(Arrays.asList(1, 2, 3));
         testGTB.printRolls(3, "Lake", testRolls);
-        String expected = "Roll 3 | Lake rolled 1 2 3";
+        String expected = "⚂ ⚁ ⚀ | Lake rolled 1 2 3";
         assertEquals(expected, outContent.toString());
     }
 
@@ -142,7 +140,7 @@ public class GoingToBostonTest {
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 20;
         testGTB.findWinner();
-        String expected = "You won!\n";
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nYou won!\n";
         assertEquals(expected, outContent.toString());
     }
 
@@ -153,7 +151,7 @@ public class GoingToBostonTest {
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 15;
         testGTB.findWinner();
-        String expected = "You tied!\n";
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nYou tied!\n";
         assertEquals(expected, outContent.toString());
     }
 
@@ -164,7 +162,7 @@ public class GoingToBostonTest {
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 14;
         testGTB.findWinner();
-        String expected = "You lost...\n";
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nYou lost...\n";
         assertEquals(expected, outContent.toString());
     }
 
@@ -174,7 +172,7 @@ public class GoingToBostonTest {
         testGTB.createNPCs(3);
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 20;
-        String expected = "< | > | < > | < | > | < > | < | > | < > | < | > | < >\n" +
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \n" +
                               "You scored 20. \n" + "Jyothi scored 15. \n" + "Lake scored 15. \n" +
                               "Shane scored 15. \n";
         testGTB.printScores();

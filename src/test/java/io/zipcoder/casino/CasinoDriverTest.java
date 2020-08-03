@@ -115,10 +115,4 @@ public class CasinoDriverTest {
         String expected = "<Black Jack> | <Craps> | <Go Fish> | <Going to Boston> | ";
         assertEquals(expected, outContent.toString());
     }
-
-    @Test
-    void chosenGame() {
-        testCasinoDriver.chosenGame(true, "Black Jack");
-    }
-
 }

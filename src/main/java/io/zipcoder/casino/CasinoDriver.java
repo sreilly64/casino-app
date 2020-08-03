@@ -7,20 +7,15 @@ import io.zipcoder.casino.utilities.Console;
 import java.util.*;
 
 public class CasinoDriver {
-    private final Console console;
-    private final Map<String, Player> playersList;
-    private Player currentPlayer;
-    private final ArrayList<Game> gamesList;
+    final Console console;
+    final Map<String, Player> playersList;
+    Player currentPlayer;
+    ArrayList<Game> gamesList;
 
-    public CasinoDriver() {
+    CasinoDriver() {
         console = new Console(System.in, System.out);
         playersList = new HashMap<>();
-        gamesList = new ArrayList<>();
 
-        gamesList.add(new BlackJack(Card.getNewDeck()));
-        gamesList.add(new Craps());
-        gamesList.add(new GoFish(Card.getNewDeck()));
-        gamesList.add(new GoingToBoston());
     }
 
     void startCasino() {
@@ -36,15 +31,19 @@ public class CasinoDriver {
     Boolean chooseSelection(boolean inSession, String userInput) {
         switch (userInput) {
             case "Login":
+            case "login":
                 playerLogin();
                 break;
             case "Logout":
+            case "logout":
                 playerLogout();
                 break;
             case "Choose Game":
+            case "choose Game":
                 chooseGame();
                 break;
             case "Quit":
+            case "quit":
                 console.println("Come again soon!");
                 inSession = false;
                 break;
@@ -119,7 +118,16 @@ public class CasinoDriver {
         }
     }
 
+    void createGameList() {
+        gamesList = new ArrayList<>();
+        gamesList.add(new BlackJack(Card.getNewDeck()));
+        gamesList.add(new Craps());
+        gamesList.add(new GoFish(Card.getNewDeck()));
+        gamesList.add(new GoingToBoston());
+    }
+
     void printGamesList() {
+        createGameList();
         for (Game game : gamesList) {
             console.print("<"+game.getGameName()+"> | ");
         }
@@ -135,29 +143,29 @@ public class CasinoDriver {
     }
 
     void askGameChoice() {
-        String userInput = console.getStringInput("Which game do you want to play?");
-        Boolean choosingGame = chosenGame(true, userInput);
-        choseGame(choosingGame);
+        String gameName = console.getStringInput("Which game do you want to play?");
+        Boolean isValidGame = isGameChosen(false, gameName);
+        choseValidGame(isValidGame);
     }
 
-    Boolean chosenGame(Boolean choosingGame, String gameName) {
+    Boolean isGameChosen(Boolean isGame, String gameName) {
         for(Game game : gamesList) {
-            if(gameName.equals(game.getGameName())) {
+            if(gameName.equalsIgnoreCase(game.getGameName())) {
                 game.startGame(currentPlayer);
-                choosingGame = false;
+                isGame = true;
                 break;
             }
         }
-        return choosingGame;
+        return isGame;
     }
 
-    void choseGame(Boolean choosingGame) {
-        String userInput;
-        while(choosingGame) {
+    void choseValidGame(Boolean isGame) {
+        String gameName;
+        while(!isGame) {
             console.println("We didn't quite catch that.");
             printGamesList();
-            userInput = console.getStringInput("Which game did you want to play?");
-            choosingGame = chosenGame(choosingGame, userInput);
+            gameName = console.getStringInput("Which game did you want to play?");
+            isGame = isGameChosen(isGame, gameName);
         }
     }
 }

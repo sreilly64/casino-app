@@ -7,19 +7,16 @@ import java.util.Objects;
 
 public class Card {
 
-    public static enum Rank {TWO, THREE, FOUR,
-        FIVE, SIX, SEVEN, EIGHT, NINE,
-        TEN, JACK, QUEEN, KING, ACE}
+    public enum Rank {TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE}
 
-    public static enum Suit {CLUBS, DIAMONDS,
-        HEARTS, SPADES}
+    public enum Suit {CLUBS, DIAMONDS, HEARTS, SPADES}
 
     public final Rank rank;
     public final Suit suit;
 
     public Card(Suit s, Rank r) {
-        suit= s;
-        rank= r;
+        suit = s;
+        rank = r;
     }
 
 
@@ -50,7 +47,7 @@ public class Card {
     }
 
     public static List<Card> getNewDeck(){
-        List<Card> newDeck = new ArrayList<Card>();
+        List<Card> newDeck = new ArrayList<>();
         for(Suit s : Suit.values()){
             for(Rank r : Rank.values()){
                 newDeck.add(new Card(s,r));
@@ -62,10 +59,7 @@ public class Card {
 
     @Override
     public String toString() {
-        return "Card [" +
-                "rank=" + rank.name() +
-                ", suit=" + suit.name() +
-                ']';
+        return rank+" of "+suit;
     }
 
     @Override
