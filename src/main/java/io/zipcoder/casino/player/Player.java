@@ -30,11 +30,10 @@ public class Player implements GamblingPlayer {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if(this == o) { return true; }
+        if(o == null || getClass() != o.getClass()) { return false; }
         Player player = (Player) o;
-        return name.equals(player.name) &&
-                currentFunds.equals(player.currentFunds);
+        return name.equals(player.name) && currentFunds.equals(player.currentFunds);
     }
 
     @Override
