@@ -18,9 +18,8 @@ public class BlackJack extends CardGame implements GamblingGame{
     Player dealer = new Player("Dealer", 0);
     Player winner;
     Boolean playing;
-    String heartsCardUnicode =
-        "\uD83C\uDCA0 \uD83C\uDCB1 \uD83C\uDCB2 \uD83C\uDCB3 \uD83C\uDCB4 \uD83C\uDCB5 \uD83C\uDCB6 \uD83C\uDCB7 " +
-            "\uD83C\uDCB8 \uD83C\uDCBA \uD83C\uDCBB \uD83C\uDCBC \uD83C\uDCBD \uD83C\uDCBE \uD83C\uDCDF \uD83C\uDCA0 ";
+    String heartsCardUnicode = "\uD83C\uDCA0 \uD83C\uDCB1 \uD83C\uDCB2 \uD83C\uDCB3 \uD83C\uDCB4 \uD83C\uDCB5 \uD83C\uDCB6 \uD83C\uDCB7 " +
+                                   "\uD83C\uDCB8 \uD83C\uDCBA \uD83C\uDCBB \uD83C\uDCBC \uD83C\uDCBD \uD83C\uDCBE \uD83C\uDCDF \uD83C\uDCA0 ";
     String heartsCardBorder = IntStream.range(0, 2).mapToObj(i -> heartsCardUnicode).collect(Collectors.joining(
         "\u2660 \u2665 \u2666 \u2663 "));
 
@@ -54,7 +53,7 @@ public class BlackJack extends CardGame implements GamblingGame{
         dealCard(dealersHand, 2);
     }
 
-    int getValidBet(Integer userInt) {
+    Integer getValidBet(Integer userInt) {
         while(!(userInt >= 2 && userInt <= 500) || (userInt > currentPlayer.getCurrentFunds())) {
             userInt = console.getIntegerInput("Enter a valid bet.");
         }
@@ -82,14 +81,18 @@ public class BlackJack extends CardGame implements GamblingGame{
         boolean inPlay = true;
         printIntroduction();
         while (playing) {
-            resetGame();
-            console.println(heartsCardBorder);
-            int userInt = console.getIntegerInput("Your current funds are $"+currentPlayer.getCurrentFunds()+"."
-            + " You can bet a minimum of $2 and a maximum of $500.\nHow much would you like to bet?");
-            startRound(currentPlayer, inPlay, userInt);
-            String userInput = console.getStringInput("Play again? Yes | No");
-            isPlaying(userInput);
+            doWhilePlaying(inPlay);
         }
+    }
+
+    void doWhilePlaying(boolean inPlay) {
+        resetGame();
+        console.println(heartsCardBorder);
+        int userInt = console.getIntegerInput("Your current funds are $"+currentPlayer.getCurrentFunds()+"."
+        + " You can bet a minimum of $2 and a maximum of $500.\nHow much would you like to bet?");
+        startRound(currentPlayer, inPlay, userInt);
+        String userInput = console.getStringInput("Play again? Yes | No");
+        isPlaying(userInput);
     }
 
     void startRound(Player player, boolean inPlay, int userInt) {
@@ -113,13 +116,13 @@ public class BlackJack extends CardGame implements GamblingGame{
                 break;
             } else {
                 console.println("We didn't quite catch that.");
-                userInput = console.getStringInput("Play again? <Yes> | <No>");
+                userInput = console.getStringInput("Play again? Yes | No");
             }
         }
     }
 
     void playRound(boolean inPlay) {
-        console.println("The dealer has one card faced down and "+dealersHand.get(1).toString()+".");
+        console.println("The dealer has one card face down and "+dealersHand.get(1).toString()+".");
         while (inPlay) {
             printPlayersHand();
             if (getScoreWithAce(playersHand) > 21) {
@@ -212,7 +215,6 @@ public class BlackJack extends CardGame implements GamblingGame{
                     currentScore+=10;
                     break;
             }
-
         }
     return currentScore;
     }
@@ -237,6 +239,10 @@ public class BlackJack extends CardGame implements GamblingGame{
         console.println(heartsCardBorder);
         int playerScore = getScoreWithAce(playersHand);
         int dealerScore = getScoreWithAce(dealersHand);
+        setWinner(playerScore, dealerScore);
+    }
+
+    void setWinner(int playerScore, int dealerScore) {
         if (playerScore > 21) {
             winner = dealer;
         } else if (dealerScore > 21) {
@@ -258,11 +264,16 @@ public class BlackJack extends CardGame implements GamblingGame{
         int score = getScore(hand);
         for (Card card : hand) {
             if (card.getRank() == ACE) {
-                int scoreWithAce = score - 10;
-                if (score > 21 && scoreWithAce <= 21) {
-                    score = scoreWithAce;
-                }
+                score = processScoreWithAce(score);
             }
+        }
+        return score;
+    }
+
+    Integer processScoreWithAce(int score) {
+        int scoreWithAce = score - 10;
+        if (score > 21 && scoreWithAce <= 21) {
+            score = scoreWithAce;
         }
         return score;
     }

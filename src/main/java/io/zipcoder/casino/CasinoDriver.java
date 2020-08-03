@@ -10,17 +10,12 @@ public class CasinoDriver {
     final Console console;
     final Map<String, Player> playersList;
     Player currentPlayer;
-    final ArrayList<Game> gamesList;
+    ArrayList<Game> gamesList;
 
     CasinoDriver() {
         console = new Console(System.in, System.out);
         playersList = new HashMap<>();
-        gamesList = new ArrayList<>();
 
-        gamesList.add(new BlackJack(Card.getNewDeck()));
-        gamesList.add(new Craps());
-        gamesList.add(new GoFish(Card.getNewDeck()));
-        gamesList.add(new GoingToBoston());
     }
 
     void startCasino() {
@@ -123,13 +118,21 @@ public class CasinoDriver {
         }
     }
 
+    void createGameList() {
+        gamesList = new ArrayList<>();
+        gamesList.add(new BlackJack(Card.getNewDeck()));
+        gamesList.add(new Craps());
+        gamesList.add(new GoFish(Card.getNewDeck()));
+        gamesList.add(new GoingToBoston());
+    }
+
     void printGamesList() {
+        createGameList();
         for (Game game : gamesList) {
             console.print("<"+game.getGameName()+"> | ");
         }
     }
 
-    @SuppressWarnings ("ConstantConditions")
     void chooseGame() {
         printGamesList();
         if (currentPlayer != null) {

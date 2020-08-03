@@ -20,12 +20,12 @@ class BlackJackTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
 
-    private BlackJack testBJ;
+    private BlackJack testBlackJack;
     private Player testPlayer;
 
     @BeforeEach
     void setUp() {
-        testBJ = new BlackJack(Card.getNewDeck());
+        testBlackJack = new BlackJack(Card.getNewDeck());
         testPlayer = new Player("Lake", 1000);
     }
 
@@ -42,7 +42,7 @@ class BlackJackTest {
 
     @Test
     void printIntroduction() {
-        testBJ.printIntroduction();
+        testBlackJack.printIntroduction();
         String expected = "🂠 🂱 🂲 🂳 🂴 🂵 🂶 🂷 🂸 🂺 🂻 🂼 🂽 🂾 🃟 🂠 ♠ ♥ ♦ ♣ 🂠 🂱 🂲 🂳 🂴 🂵 🂶 🂷 🂸 🂺 🂻 🂼 🂽 🂾 🃟 🂠 \n"+
                               "                    Welcome to the Black Jack table!                  \n"+
                               "🂠 🂱 🂲 🂳 🂴 🂵 🂶 🂷 🂸 🂺 🂻 🂼 🂽 🂾 🃟 🂠 ♠ ♥ ♦ ♣ 🂠 🂱 🂲 🂳 🂴 🂵 🂶 🂷 🂸 🂺 🂻 🂼 🂽 🂾 🃟 🂠 \n"+
@@ -59,113 +59,113 @@ class BlackJackTest {
 
     @Test
     void resetGame_PlayersHand_NotNull() {
-        assertNull(testBJ.playersHand);
-        testBJ.resetGame();
-        assertNotNull(testBJ.playersHand);
+        assertNull(testBlackJack.playersHand);
+        testBlackJack.resetGame();
+        assertNotNull(testBlackJack.playersHand);
     }
 
     @Test
     void resetGame_PlayersHand_Size() {
-        testBJ.resetGame();
+        testBlackJack.resetGame();
         Integer expected = 2;
-        Integer actual = testBJ.playersHand.size();
+        Integer actual = testBlackJack.playersHand.size();
         assertEquals(expected, actual);
     }
 
     @Test
     void resetGame_DealersHand_NotNull() {
-        assertNull(testBJ.dealersHand);
-        testBJ.resetGame();
-        assertNotNull(testBJ.dealersHand);
+        assertNull(testBlackJack.dealersHand);
+        testBlackJack.resetGame();
+        assertNotNull(testBlackJack.dealersHand);
     }
 
     @Test
     void resetGame_DealersHand_Size() {
-        testBJ.resetGame();
+        testBlackJack.resetGame();
         Integer expected = 2;
-        Integer actual = testBJ.dealersHand.size();
+        Integer actual = testBlackJack.dealersHand.size();
         assertEquals(expected, actual);
     }
 
     @Test
     void resetGame_CurrentBet_Null() {
-        testBJ.bet(10);
-        testBJ.resetGame();
-        assertNull(testBJ.currentBet);
+        testBlackJack.bet(10);
+        testBlackJack.resetGame();
+        assertNull(testBlackJack.currentBet);
     }
 
     @Test
     void resetGame_Winner_Null() {
-        testBJ.winner = testPlayer;
-        testBJ.resetGame();
-        assertNull(testBJ.winner);
+        testBlackJack.winner = testPlayer;
+        testBlackJack.resetGame();
+        assertNull(testBlackJack.winner);
     }
 
     @Test
     void quitGame() {
-        testBJ.quitGame();
-        assertFalse(testBJ.playing);
+        testBlackJack.quitGame();
+        assertFalse(testBlackJack.playing);
     }
 
     @Test
     void getGameName() {
         String expected = "Black Jack";
-        String actual = testBJ.getGameName();
+        String actual = testBlackJack.getGameName();
         assertEquals(expected, actual);
     }
 
     @Test
     void startPlay() {
-        testBJ.dealersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE), new Card(HEARTS, THREE)));
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, JACK), new Card(HEARTS, QUEEN),
+        testBlackJack.dealersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE), new Card(HEARTS, THREE)));
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, JACK), new Card(HEARTS, QUEEN),
             new Card(HEARTS, KING)));
-        testBJ.playRound(true);
-        String expected = "The dealer has one card faced down and THREE of HEARTS.\nYou have: JACK of HEARTS | QUEEN " +
+        testBlackJack.playRound(true);
+        String expected = "The dealer has one card face down and THREE of HEARTS.\nYou have: JACK of HEARTS | QUEEN " +
                               "of HEARTS | KING of HEARTS.\nYou bust!\n";
         assertEquals(expected, outContent.toString());
     }
 
     @Test
     void isStillPlaying_NoInput() {
-        testBJ.isPlaying("No");
-        assertFalse(testBJ.playing);
+        testBlackJack.isPlaying("No");
+        assertFalse(testBlackJack.playing);
     }
 
     @Test
     void isStillPlaying_YesInput() {
-        testBJ.isPlaying("Yes");
-        assertTrue(testBJ.playing);
+        testBlackJack.isPlaying("Yes");
+        assertTrue(testBlackJack.playing);
     }
 
     @Test
     void dealCard() {
-        testBJ.resetGame();
-        testBJ.dealCard(testBJ.playersHand, 1);
+        testBlackJack.resetGame();
+        testBlackJack.dealCard(testBlackJack.playersHand, 1);
         Integer expected = 3;
-        Integer actual = testBJ.playersHand.size();
+        Integer actual = testBlackJack.playersHand.size();
         assertEquals(expected, actual);
     }
 
     @Test
     void bet() {
-        testBJ.bet(10);
+        testBlackJack.bet(10);
         Integer expected = 10;
-        Integer actual = testBJ.getCurrentBet();
+        Integer actual = testBlackJack.getCurrentBet();
         assertEquals(expected, actual);
     }
 
     @Test
     void stand() {
-        testBJ.stand();
+        testBlackJack.stand();
         String expected = "You stand.\n";
         assertEquals(expected, outContent.toString());
     }
 
     @Test
     void payout_Winner() {
-        testBJ.resetGame();
-        testBJ.winner = testPlayer;
-        testBJ.payout(testPlayer, 100);
+        testBlackJack.resetGame();
+        testBlackJack.winner = testPlayer;
+        testBlackJack.payout(testPlayer, 100);
         Integer expected = 1100;
         Integer actual = testPlayer.getCurrentFunds();
         assertEquals(expected, actual);
@@ -173,18 +173,18 @@ class BlackJackTest {
 
     @Test
     void payout_Winner_Print() {
-        testBJ.resetGame();
-        testBJ.winner = testPlayer;
-        testBJ.payout(testPlayer, 100);
+        testBlackJack.resetGame();
+        testBlackJack.winner = testPlayer;
+        testBlackJack.payout(testPlayer, 100);
         String expected = "You won $100. Your current funds are $1100.\n";
         assertEquals(expected, outContent.toString());
     }
 
     @Test
     void payout_Loser() {
-        testBJ.resetGame();
-        testBJ.winner = testBJ.dealer;
-        testBJ.payout(testPlayer, 100);
+        testBlackJack.resetGame();
+        testBlackJack.winner = testBlackJack.dealer;
+        testBlackJack.payout(testPlayer, 100);
         Integer expected = 900;
         Integer actual = testPlayer.getCurrentFunds();
         assertEquals(expected, actual);
@@ -192,227 +192,227 @@ class BlackJackTest {
 
     @Test
     void payout_Loser_Print() {
-        testBJ.resetGame();
-        testBJ.winner = testBJ.dealer;
-        testBJ.payout(testPlayer, 100);
+        testBlackJack.resetGame();
+        testBlackJack.winner = testBlackJack.dealer;
+        testBlackJack.payout(testPlayer, 100);
         String expected = "You lost $100. Your current funds are $900.\n";
         assertEquals(expected, outContent.toString());
     }
 
     @Test
     void printWinner_Player() {
-        testBJ.resetGame();
-        testBJ.winner = testPlayer;
-        testBJ.printWinner();
+        testBlackJack.resetGame();
+        testBlackJack.winner = testPlayer;
+        testBlackJack.printWinner();
         String expected = "Lake wins.\n";
         assertEquals(expected, outContent.toString());
     }
 
     @Test
     void printWinner_Dealer() {
-        testBJ.resetGame();
-        testBJ.winner = testBJ.dealer;
-        testBJ.printWinner();
+        testBlackJack.resetGame();
+        testBlackJack.winner = testBlackJack.dealer;
+        testBlackJack.printWinner();
         String expected = "Dealer wins.\n";
         assertEquals(expected, outContent.toString());
     }
 
     @Test
     void printWinner_NoOne() {
-        testBJ.resetGame();
-        testBJ.winner = new Player("No one", 0);
-        testBJ.printWinner();
+        testBlackJack.resetGame();
+        testBlackJack.winner = new Player("No one", 0);
+        testBlackJack.printWinner();
         String expected = "No one wins.\n";
         assertEquals(expected, outContent.toString());
     }
 
     @Test
     void getCurrentBet() {
-        testBJ.bet(10);
+        testBlackJack.bet(10);
         Integer expected = 10;
-        Integer actual = testBJ.getCurrentBet();
+        Integer actual = testBlackJack.getCurrentBet();
         assertEquals(expected, actual);
     }
 
     @Test
     void getCurrentBet_CurrentBet_Null() {
-        assertNull(testBJ.getCurrentBet());
+        assertNull(testBlackJack.getCurrentBet());
     }
 
     @Test
     void clearBets() {
-        testBJ.bet(10);
-        testBJ.clearBets();
-        assertNull(testBJ.currentBet);
+        testBlackJack.bet(10);
+        testBlackJack.clearBets();
+        assertNull(testBlackJack.currentBet);
     }
 
     @Test
     void printPlayersHand() {
-        testBJ.playersHand = new ArrayList<>(Collections.singletonList(new Card(HEARTS, FOUR)));
-        testBJ.printPlayersHand();
+        testBlackJack.playersHand = new ArrayList<>(Collections.singletonList(new Card(HEARTS, FOUR)));
+        testBlackJack.printPlayersHand();
         String expected = "You have: FOUR of HEARTS.";
         assertEquals(expected, outContent.toString());
     }
 
     @Test
     void getScore() {
-        testBJ.playersHand = new ArrayList<>(Collections.singletonList(new Card(HEARTS, ACE)));
+        testBlackJack.playersHand = new ArrayList<>(Collections.singletonList(new Card(HEARTS, ACE)));
         Integer expected = 11;
-        Integer actual = testBJ.getScore(testBJ.playersHand);
+        Integer actual = testBlackJack.getScore(testBlackJack.playersHand);
         assertEquals(expected, actual);
     }
 
     @Test
     void hit() {
-        testBJ.resetGame();
-        testBJ.hit(testBJ.playersHand);
+        testBlackJack.resetGame();
+        testBlackJack.hit(testBlackJack.playersHand);
         Integer expected = 3;
-        Integer actual = testBJ.playersHand.size();
+        Integer actual = testBlackJack.playersHand.size();
         assertEquals(expected, actual);
     }
 
     @Test
     void isStillInPlay_Stand() {
-        testBJ.resetGame();
-        assertFalse(testBJ.isStillInPlay("Stand"));
+        testBlackJack.resetGame();
+        assertFalse(testBlackJack.isStillInPlay("Stand"));
     }
 
     @Test
     void isStillInPlay_Hit() {
-        testBJ.resetGame();
-        assertTrue(testBJ.isStillInPlay("Hit"));
+        testBlackJack.resetGame();
+        assertTrue(testBlackJack.isStillInPlay("Hit"));
     }
 
     @Test
     void getScoreWithAce_One() {
-        testBJ.playersHand = new ArrayList<>(Collections.singletonList(new Card(HEARTS, ACE)));
+        testBlackJack.playersHand = new ArrayList<>(Collections.singletonList(new Card(HEARTS, ACE)));
         Integer expected = 11;
-        Integer actual = testBJ.getScoreWithAce(testBJ.playersHand);
+        Integer actual = testBlackJack.getScoreWithAce(testBlackJack.playersHand);
         assertEquals(expected, actual);
     }
 
     @Test
     void getScoreWithAce_Two() {
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(DIAMONDS, ACE),
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(DIAMONDS, ACE),
             new Card(HEARTS, TWO)));
         Integer expected = 14;
-        Integer actual = testBJ.getScoreWithAce(testBJ.playersHand);
+        Integer actual = testBlackJack.getScoreWithAce(testBlackJack.playersHand);
         assertEquals(expected, actual);
     }
 
     @Test
     void checkForNatural_Player() {
-        testBJ.currentPlayer = testPlayer;
-        testBJ.currentBet = 100;
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, TEN)));
-        testBJ.dealersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, SIX), new Card(HEARTS, NINE)));
-        assertTrue(testBJ.checkForNatural());
+        testBlackJack.currentPlayer = testPlayer;
+        testBlackJack.currentBet = 100;
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, TEN)));
+        testBlackJack.dealersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, SIX), new Card(HEARTS, NINE)));
+        assertTrue(testBlackJack.checkForNatural());
         String expected = "You have: ACE of HEARTS | TEN of HEARTS.\nDealer has: SIX of DIAMONDS | NINE of HEARTS." +
                               "\nYou have Black Jack!\n";
         assertEquals(expected, outContent.toString());
-        assertSame(testBJ.winner, testPlayer);
+        assertSame(testBlackJack.winner, testPlayer);
     }
 
     @Test
     void checkForNatural_Dealer() {
-        testBJ.currentPlayer = testPlayer;
-        testBJ.currentBet = 100;
-        testBJ.dealersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, TEN)));
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, SEVEN), new Card(HEARTS, NINE)));
-        assertTrue(testBJ.checkForNatural());
+        testBlackJack.currentPlayer = testPlayer;
+        testBlackJack.currentBet = 100;
+        testBlackJack.dealersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, TEN)));
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, SEVEN), new Card(HEARTS, NINE)));
+        assertTrue(testBlackJack.checkForNatural());
         String expected = "You have: SEVEN of DIAMONDS | NINE of HEARTS.\nDealer has: ACE of HEARTS | TEN of HEARTS" +
                               ".\nDealer has Black Jack!\n";
         assertEquals(expected, outContent.toString());
-        assertSame(testBJ.winner, testBJ.dealer);
+        assertSame(testBlackJack.winner, testBlackJack.dealer);
     }
 
     @Test
     void checkForNatural_Both() {
-        testBJ.currentPlayer = testPlayer;
-        testBJ.currentBet = 100;
-        testBJ.dealersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, TEN)));
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE), new Card(DIAMONDS, TEN)));
-        assertTrue(testBJ.checkForNatural());
+        testBlackJack.currentPlayer = testPlayer;
+        testBlackJack.currentBet = 100;
+        testBlackJack.dealersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, TEN)));
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE), new Card(DIAMONDS, TEN)));
+        assertTrue(testBlackJack.checkForNatural());
         String expected = "You have: ACE of DIAMONDS | TEN of DIAMONDS.\nDealer has: ACE of HEARTS | TEN of HEARTS." +
                               "\nYou and Dealer have Black Jack!\n";
         assertEquals(expected, outContent.toString());
-        assertEquals(testBJ.winner, new Player("No one", 0));
+        assertEquals(testBlackJack.winner, new Player("No one", 0));
     }
 
     @Test
     void checkForNatural_Neither() {
-        testBJ.currentPlayer = testPlayer;
-        testBJ.currentBet = 100;
-        testBJ.dealersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, NINE)));
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE), new Card(DIAMONDS, NINE)));
-        assertFalse(testBJ.checkForNatural());
-        assertNull(testBJ.winner);
+        testBlackJack.currentPlayer = testPlayer;
+        testBlackJack.currentBet = 100;
+        testBlackJack.dealersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, NINE)));
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE), new Card(DIAMONDS, NINE)));
+        assertFalse(testBlackJack.checkForNatural());
+        assertNull(testBlackJack.winner);
     }
 
     @Test
     void checkHand() {
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, TEN)));
-        assertTrue(testBJ.checkHand(testBJ.playersHand));
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, TEN)));
+        assertTrue(testBlackJack.checkHand(testBlackJack.playersHand));
     }
 
     @Test
     void checkAce() {
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, NINE), new Card(HEARTS, TEN)));
-        assertFalse(testBJ.checkAce(testBJ.playersHand, 0));
-        assertFalse(testBJ.checkAce(testBJ.playersHand, 1));
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, NINE), new Card(HEARTS, TEN)));
+        assertFalse(testBlackJack.checkAce(testBlackJack.playersHand, 0));
+        assertFalse(testBlackJack.checkAce(testBlackJack.playersHand, 1));
     }
 
     @Test
     void checkTen() {
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, TEN)));
-        assertFalse(testBJ.checkTen(testBJ.playersHand, 0));
-        assertTrue(testBJ.checkTen(testBJ.playersHand, 1));
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, TEN)));
+        assertFalse(testBlackJack.checkTen(testBlackJack.playersHand, 0));
+        assertTrue(testBlackJack.checkTen(testBlackJack.playersHand, 1));
     }
 
     @Test
     void getDealersPlay_Bust() {
-        testBJ.dealersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, JACK), new Card(HEARTS, TEN),
+        testBlackJack.dealersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, JACK), new Card(HEARTS, TEN),
             new Card(HEARTS, NINE)));
-        testBJ.getDealersPlay();
+        testBlackJack.getDealersPlay();
         String expected = "🂠 🂱 🂲 🂳 🂴 🂵 🂶 🂷 🂸 🂺 🂻 🂼 🂽 🂾 🃟 🂠 ♠ ♥ ♦ ♣ 🂠 🂱 🂲 🂳 🂴 🂵 🂶 🂷 🂸 🂺 🂻 🂼 🂽 🂾 🃟 🂠 \nDealer bust.\n";
         assertEquals(expected, outContent.toString());
     }
 
     @Test
     void getWinner_Player() {
-        testBJ.currentPlayer = testPlayer;
-        testBJ.dealersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, EIGHT)));
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE), new Card(DIAMONDS, NINE)));
-        testBJ.getWinner();
-        assertSame(testBJ.winner, testPlayer);
+        testBlackJack.currentPlayer = testPlayer;
+        testBlackJack.dealersHand = new ArrayList<>(Arrays.asList(new Card(HEARTS, ACE), new Card(HEARTS, EIGHT)));
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE), new Card(DIAMONDS, NINE)));
+        testBlackJack.getWinner();
+        assertSame(testBlackJack.winner, testPlayer);
     }
 
     @Test
     void getChoices_Hit() {
         String expected = "Hit.";
-        String actual = testBJ.getChoices(10);
+        String actual = testBlackJack.getChoices(10);
         assertEquals(expected, actual);
     }
 
     @Test
     void getChoices_HitAndStand() {
         String expected = "Hit | Stand.";
-        String actual = testBJ.getChoices(12);
+        String actual = testBlackJack.getChoices(12);
         assertEquals(expected, actual);
     }
 
     @Test
     void printChoices_Hit() {
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE)));
-        testBJ.printChoices();
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE)));
+        testBlackJack.printChoices();
         String expected = "\nYou can: Hit.";
         assertEquals(expected, outContent.toString());
     }
 
     @Test
     void printChoices_HitAndStand() {
-        testBJ.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE), new Card(DIAMONDS, NINE)));
-        testBJ.printChoices();
+        testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE), new Card(DIAMONDS, NINE)));
+        testBlackJack.printChoices();
         String expected = "\nYou can: Hit | Stand.";
         assertEquals(expected, outContent.toString());
     }

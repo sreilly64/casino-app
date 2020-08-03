@@ -48,16 +48,8 @@ public class GoingToBostonTest {
                               "    die is added to the player's total.\n" +
                               "  ⚂ On the first turn, the player rolls three dice. \n" +
                               "  ⚃ On the second turn, the player rolls two and on the last turn, \n" +
-                              "    the player rolls only one.\n" + "  ⚄ The player with the highest total wins!\n" +
-                              "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \n";
+                              "    the player rolls only one.\n" + "  ⚄ The player with the highest total wins!\n";
         assertEquals(expected, outContent.toString());
-    }
-
-    @Test
-    void getNumberOfOpponents() {
-        Integer expected = 3;
-        Integer actual = testGTB.getNumberOfOpponents(3);
-        assertEquals(expected, actual);
     }
 
     @Test
@@ -98,7 +90,7 @@ public class GoingToBostonTest {
     void printRolls() {
         ArrayList<Integer> testRolls = new ArrayList<>(Arrays.asList(1, 2, 3));
         testGTB.printRolls(3, "Lake", testRolls);
-        String expected = "Roll 3 | Lake rolled 1 2 3";
+        String expected = "⚂ ⚁ ⚀ | Lake rolled 1 2 3";
         assertEquals(expected, outContent.toString());
     }
 
@@ -148,7 +140,7 @@ public class GoingToBostonTest {
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 20;
         testGTB.findWinner();
-        String expected = "You won!\n";
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nYou won!\n";
         assertEquals(expected, outContent.toString());
     }
 
@@ -159,7 +151,7 @@ public class GoingToBostonTest {
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 15;
         testGTB.findWinner();
-        String expected = "You tied!\n";
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nYou tied!\n";
         assertEquals(expected, outContent.toString());
     }
 
@@ -170,7 +162,7 @@ public class GoingToBostonTest {
         testGTB.nPCScores.replaceAll((player, score) -> score = 15);
         testGTB.playerScore = 14;
         testGTB.findWinner();
-        String expected = "You lost...\n";
+        String expected = "⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅ \nYou lost...\n";
         assertEquals(expected, outContent.toString());
     }
 

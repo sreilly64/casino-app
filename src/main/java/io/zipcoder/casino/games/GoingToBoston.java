@@ -23,27 +23,28 @@ public class GoingToBoston extends DiceGame{
     }
 
     void printIntroduction() {
-        console.println(diceBorder+
-            "\n                     Welcome to Going to Boston!                     \n"+ //21,21
+        console.print(diceBorder+
+            "\n                     Welcome to Going to Boston!                     \n"+
             diceBorder+
-            "\n                             How to play:                              "+ //29,30
+            "\n                             How to play:                              "+
             "\n  \u2680 Each player has three turns."+
             "\n  \u2681 Each turn, six-sided dice are rolled and the number of the highest "+
             "\n    die is added to the player's total."+
             "\n  \u2682 On the first turn, the player rolls three dice. "+
             "\n  \u2683 On the second turn, the player rolls two and on the last turn, "+
             "\n    the player rolls only one."+
-            "\n  \u2684 The player with the highest total wins!\n"+diceBorder);
+            "\n  \u2684 The player with the highest total wins!\n");
     }
 
     @Override
     public void resetGame() {
-        int userInput = console.getIntegerInput("Would you like to face 1, 2, or 3 opponents?");
-        int numOfOpponents = getNumberOfOpponents(userInput);
+        console.println(diceBorder);
+        int numOfOpponents = getNumberOfOpponents();
         createNPCs(numOfOpponents);
     }
 
-    int getNumberOfOpponents(Integer userInput) {
+    int getNumberOfOpponents() {
+        int userInput = console.getIntegerInput("Would you like to face 1, 2, or 3 opponents?");
         while(!(userInput >= 1 && userInput <= 3)) {
             userInput = console.getIntegerInput("Choose 1, 2, or 3 opponents to face.");
         }
@@ -88,7 +89,7 @@ public class GoingToBoston extends DiceGame{
                 break;
             } else {
                 console.println("We didn't quite catch that.");
-                userInput = console.getStringInput("Play again? <Yes> | <No>");
+                userInput = console.getStringInput("Play again? Yes | No");
             }
         }
     }
@@ -103,8 +104,7 @@ public class GoingToBoston extends DiceGame{
     int playRound(@NotNull Player player) {
         highestRolls = new int[3];
         int numOfDie = 3;
-        String name = player.equals(currentPlayer) ? "You" : player.getName();
-        getRolls(numOfDie, name);
+        getRolls(numOfDie, player.getName());
         return IntStream.of(highestRolls).sum();
     }
 
@@ -119,12 +119,13 @@ public class GoingToBoston extends DiceGame{
     }
 
     void printRolls(int numOfDie, String name, ArrayList<Integer> rolls) {
-        console.print("Roll "+ numOfDie +" | "+ name +" rolled");
+        String[] dice = new String[]{"    \u2680", "  \u2681 \u2680", "\u2682 \u2681 \u2680"};
+        console.print(dice[numOfDie-1]+" | "+ name +" rolled");
         for (Integer roll : rolls) {
             console.print( " "+roll);
-            //Dice.printDice(Dice.valueOf((Integer)roll));
-            //console.print(" "+Dice.valueOf(roll));
         }
+        String[] space = new String[]{"    ", "  ", ""};
+        console.print(space[numOfDie-1]);
     }
 
     void addHighestRoll(int i, ArrayList<Integer> rolls) {
@@ -142,7 +143,7 @@ public class GoingToBoston extends DiceGame{
 
     void printScores() {
         console.println(diceBorder);
-        console.println("You scored "+playerScore+". ");
+        console.println(currentPlayer.getName()+" scored "+playerScore+". ");
         nPCScores.forEach ((npc, score) -> console.println(npc.getName()+" scored "+score+". "));
     }
 
@@ -152,12 +153,13 @@ public class GoingToBoston extends DiceGame{
     }
 
     void printWinner(Player nPC) {
+        console.println(diceBorder);
         if (playerScore > nPCScores.get(nPC)) {
-            console.println("You won!");
+            console.println(currentPlayer.getName()+" won!");
         } else if (playerScore == nPCScores.get(nPC)) {
-            console.println("You tied!");
+            console.println(currentPlayer.getName()+" tied!");
         } else {
-            console.println("You lost...");
+            console.println(currentPlayer.getName()+" lost...");
         }
     }
 }
