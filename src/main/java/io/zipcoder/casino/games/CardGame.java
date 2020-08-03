@@ -28,8 +28,6 @@ public abstract class CardGame implements Game {
 
      abstract void dealCards(Integer numOfCards);
 
-
-    abstract public void getWinner();
-
+     abstract public void getWinner();
 
 }
