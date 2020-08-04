@@ -176,6 +176,7 @@ public class GoFish extends CardGame {
                 System.out.println("Please enter a valid rank");
                 continue;
             } catch (Exception ex) {
+                getWinner();
                 throw new Exception("Exit the game");
             }
 
