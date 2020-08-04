@@ -55,7 +55,11 @@ public class GoFish extends CardGame {
     @Override
     //user console
     public void startGame(Player player) {
-        System.out.println("Welcome to Go Fish Game, please enter 'Y' to continue or 'N' to exit out of the game");
+        String fish = "\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F\t\uD83D\uDC1F";
+        System.out.println(fish);
+        System.out.println("\t\t\t\tWelcome to Go Fish Game!!!\t\t\t\t");
+        System.out.println(fish);
+        System.out.println("please enter 'Y' to continue or 'N' to exit out of the game");
         String exitGame = new Scanner(System.in).next();
         while (isPlaying) {
             while (!"Y".equalsIgnoreCase(exitGame) && !"N".equalsIgnoreCase(exitGame)) {
@@ -211,6 +215,7 @@ public class GoFish extends CardGame {
     private Card.Rank checkWithOpponent(Player hPlayer) throws Exception {
         Card.Rank rankAsked = selectCardFromHand(hPlayer);
         boolean flag;
+        String oneFish ="\uD83D\uDC20\t\uD83D\uDC20\t\uD83D\uDC20\t\uD83D\uDC20\t\uD83D\uDC20";
         do {
             if (null != rankAsked && askCard(opponentPlayer, rankAsked)) {
                 flag = true;
@@ -226,6 +231,8 @@ public class GoFish extends CardGame {
 
             } else {
                 System.out.println("Go Fish!!!");
+                System.out.print(oneFish);
+                System.out.println();
                 flag = false;
                 break;
             }
@@ -237,9 +244,8 @@ public class GoFish extends CardGame {
 
     //go Fish if the opponent does not have the card
     private void goFish(Player hPlayer, Card.Rank cardAsked) {
-
+            String Book ="\uD83D\uDCD7\t\uD83D\uDCD7\t\uD83D\uDCD7\t\uD83D\uDCD7";
         Card drawnCard = drawTopCard();
-
         if (null != drawnCard) {
             boolean toContinue = false;
             do {
@@ -248,6 +254,7 @@ public class GoFish extends CardGame {
                     humanPlayerCard.add(drawnCard);
                     currentPlayerCards = humanPlayerCard;
                     if (isHumanBookComplete()) {
+                        System.out.println(Book);
                         System.out.println("Awesome , you completed a book!");
                         humanPlayerBooks++;
                     }
@@ -255,6 +262,7 @@ public class GoFish extends CardGame {
                     pcPlayerCard.add(drawnCard);
                     currentPlayerCards = pcPlayerCard;
                     if (isPcBookComplete()) {
+                        System.out.println(Book);
                         System.out.println("Awesome , PC completed a book!");
                         pcPlayerBooks++;
                     }
