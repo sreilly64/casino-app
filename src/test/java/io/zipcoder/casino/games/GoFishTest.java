@@ -3,6 +3,7 @@ package io.zipcoder.casino.games;
 import io.zipcoder.casino.Card;
 import io.zipcoder.casino.player.Player;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -24,6 +25,7 @@ public class GoFishTest {
     List<Card> humanPlayerCardTest;
     List<Card> pcPlayerCardTest;
     List<Card> remainingDeck;
+    List<Card> currentPlayerCards;
     Player pcPlayer;
     Player humanPlayer;
     Map<Player, List<Card>> playerListMap;
@@ -33,10 +35,19 @@ public class GoFishTest {
     public void setUp() {
         currentDeck = new ArrayList<>();
         currentDeck = Card.getNewDeck();
+
+        Card card = new Card(SPADES, FIVE);
+        currentDeck.add(card);
         gofish = new GoFish(currentDeck);
         humanPlayerCardTest = gofish.humanPlayerCard;
+        humanPlayerCardTest.add(card);
+
         pcPlayerCardTest = gofish.pcPlayerCard;
+        pcPlayerCardTest.add(card);
+
         remainingDeck = new ArrayList<>(1);
+        currentPlayerCards = gofish.humanPlayerCard;
+
         gofish.dealCards(7);
         humanPlayer = new Player("DEFAULT_PLAYER",0);
 
@@ -48,14 +59,14 @@ public class GoFishTest {
 
     @Test
     public void dealCardsTest() {
-        Assert.assertEquals((humanPlayerCardTest.size()),7 );
-        Assert.assertEquals((pcPlayerCardTest.size()),7 );
+        Assert.assertEquals((humanPlayerCardTest.size()),8 );
+        Assert.assertEquals((pcPlayerCardTest.size()),8 );
     }
 
     @Test
     public void quitStartGameTest(){
         gofish.isPlaying = false;
-        gofish.startGame(humanPlayer);
+        gofish.quitGame();
     }
 
     @Test
@@ -109,15 +120,16 @@ public class GoFishTest {
 
     @Test
     void letsPlayGoFishTestHumanPlayer() throws Exception {
-        Card asked = new Card(SPADES,FIVE);
+        Card.Rank asked = FIVE;
+        Card card = new Card(SPADES,asked);
         GoFish mockFish = mock(GoFish.class);
         when(mockFish.selectCardFromHand(humanPlayer)).thenReturn(asked);
         doCallRealMethod().when(mockFish).letsPlayGoFish(humanPlayer,pcPlayer);
-        doReturn(asked).when(mockFish).drawTopCard();
+        doReturn(card).when(mockFish).drawTopCard();
         when(mockFish.nextTurn(humanPlayer)).thenReturn(pcPlayer);
         mockFish.pcPlayerCard = pcPlayerCardTest;
         mockFish.humanPlayerCard = humanPlayerCardTest;
-        remainingDeck.add(asked);
+        remainingDeck.add(card);
         mockFish.remainingDeck = remainingDeck;
 
         mockFish.letsPlayGoFish(humanPlayer,pcPlayer);
@@ -125,15 +137,16 @@ public class GoFishTest {
 
     @Test
     void letsPlayGoFishTestPcPlayer() throws Exception {
-        Card asked = new Card(SPADES,FIVE);
+        Card.Rank asked = FIVE;
+        Card card = new Card(SPADES,asked);
         GoFish mockFish = mock(GoFish.class);
         when(mockFish.selectCardFromHand(pcPlayer)).thenReturn(asked);
         doCallRealMethod().when(mockFish).letsPlayGoFish(pcPlayer,humanPlayer);
-        doReturn(asked).when(mockFish).drawTopCard();
+        doReturn(card).when(mockFish).drawTopCard();
         when(mockFish.nextTurn(pcPlayer)).thenReturn(humanPlayer);
         mockFish.pcPlayerCard = pcPlayerCardTest;
         mockFish.humanPlayerCard = humanPlayerCardTest;
-        remainingDeck.add(asked);
+        remainingDeck.add(card);
         mockFish.remainingDeck = remainingDeck;
 
         mockFish.letsPlayGoFish(pcPlayer,humanPlayer);
@@ -231,9 +244,56 @@ public class GoFishTest {
     }
 
     @Test
-    public void selectCardFromHandTest() throws Exception {
-        Card card = gofish.selectCardFromHand(pcPlayer);
-        Assert.assertNotNull(card);
+    public void selectCardFromHandTestPcPlayer() throws Exception {
+        String input = "FIVE";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+        Card.Rank rank = gofish.selectCardFromHand(pcPlayer);
+        Assert.assertNotNull(rank);
+    }
+
+    @Test
+    public void selectCardFromHandTestHumanPlayer() throws Exception {
+        String input = "FIVE";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        gofish.pcPlayerCard = pcPlayerCardTest;
+        gofish.humanPlayerCard = humanPlayerCardTest;
+        gofish.currentPlayerCards =humanPlayerCardTest;
+
+        Card.Rank rank = gofish.selectCardFromHand(humanPlayer);
+        Assert.assertNotNull(rank);
+    }
+
+    @org.junit.Test(expected = Exception.class)
+    public void selectCardFromHandTestHumanPlayer_QuitGame() throws Exception {
+        String input = "quit";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        gofish.pcPlayerCard = pcPlayerCardTest;
+        gofish.humanPlayerCard = humanPlayerCardTest;
+        gofish.currentPlayerCards =humanPlayerCardTest;
+
+        Card.Rank rank = gofish.selectCardFromHand(humanPlayer);
+
+    }
+
+    @Ignore
+    @org.junit.Test(expected = Exception.class)
+    public void getUserSelectedCardTest() throws Exception {
+        String input = "right";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        gofish.pcPlayerCard = pcPlayerCardTest;
+        gofish.humanPlayerCard = humanPlayerCardTest;
+        gofish.currentPlayerCards =humanPlayerCardTest;
+
+        Card.Rank rank = gofish.selectCardFromHand(humanPlayer);
+
+
     }
 
 }
