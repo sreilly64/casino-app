@@ -53,17 +53,22 @@ public class GoFish extends CardGame {
     }
 
     @Override
+    //user console
     public void startGame(Player player) {
-        while(isPlaying) {
-            System.out.println("Welcome to Go Fish Game, please enter 'Y' to continue or 'N' to exit out of the game");
+        System.out.println("Welcome to Go Fish Game, please enter 'Y' to continue or 'N' to exit out of the game");
+        String exitGame = new Scanner(System.in).next();
+        while (isPlaying) {
+            while (!"Y".equalsIgnoreCase(exitGame) && !"N".equalsIgnoreCase(exitGame)) {
+                System.out.println("Please enter Y or N");
+                exitGame = new Scanner(System.in).next();
+            }
 
-            String quitString = new Scanner(System.in).next();
-            if ("N".equalsIgnoreCase(quitString)) {
+            if ("N".equalsIgnoreCase(exitGame)) {
                 break;
             } else {
                 try {
                     startPlay(player);
-                } catch(Exception ex){
+                } catch (Exception ex) {
                     System.out.println("See you again!!!");
                     break;
                 }
@@ -71,15 +76,14 @@ public class GoFish extends CardGame {
         }
     }
 
+    // The Game begins
     void startPlay(Player player) throws Exception {
-
         this.humanPlayer = player;
         this.currentPlayer = player;
         System.out.println("Hello " + humanPlayer.getName() + "!!");
         dealCards(7);
         playersHand();
         this.opponentPlayer = pcPlayer;
-
 
         while (booksCompleted < 13 || (remainingDeck.size() != 0 && (pcPlayerCard.size() != 0 || humanPlayerCard.size() != 0))) {
             letsPlayGoFish(currentPlayer, opponentPlayer);
@@ -93,11 +97,10 @@ public class GoFish extends CardGame {
                 takeCardsFromDeck(humanPlayer);
             }
         }
-
         getWinner();
-
     }
 
+    //Opponent and current Player are decided and current Player cards List is set.
     void letsPlayGoFish(Player hPlayer, Player pPlayer) throws Exception {
         this.opponentPlayer = (pPlayer.getName().equals("PC") ? pcPlayer : humanPlayer);
 
@@ -107,84 +110,82 @@ public class GoFish extends CardGame {
             currentPlayerCards = pcPlayerCard;
         }
 
-        Card cardAsked = checkWithOpponent(hPlayer);
+        Card.Rank rankAsked = checkWithOpponent(hPlayer);
 
-        goFish(hPlayer, cardAsked);
+        goFish(hPlayer, rankAsked);
 
         this.opponentPlayer = hPlayer;
         this.currentPlayer = nextTurn(hPlayer);
         System.out.println("It's your turn now " + currentPlayer.getName());
     }
 
-
-
-
-   //currentPlayer chooses a  card from his hand to ask
-
-    Card selectCardFromHand(Player currentPlayer) throws Exception {
+    //currentPlayer chooses a  card from his hand to ask
+    Card.Rank selectCardFromHand(Player currentPlayer) throws Exception {
         Card card = null;
+        Card.Rank rank = null;
         Random random = new Random();
-        if (!currentPlayer.getName().equals("PC")) {
 
+        if (!currentPlayer.getName().equals("PC")) {
             if (humanPlayerCard.size() > 0) {
                 System.out.println("The cards in you hand are : ");
                 System.out.print(this.currentPlayerCards);
                 System.out.println();
-                System.out.println("Do you want to continue the game, Enter Y or N ");
-
-                String quitString = new Scanner(System.in).next();
-                if ("N".equalsIgnoreCase(quitString)) {
-                    throw new Exception("See you again");
-                }
-                System.out.println("Choose a card to ask the opponent");
-                card = getUserSelectedCard(card);
-
-                //return card;
+                rank = getUserSelectedCard(currentPlayerCards);
             }
         } else {
             if (pcPlayerCard.size() > 0) {
                 card = pcPlayerCard.get(random.nextInt(pcPlayerCard.size()));
+                rank = card.getRank();
             }
         }
 
-        return card;
+        return rank;
     }
 
     // User selects the card to ask
-    private Card getUserSelectedCard(Card card) {
+    private Card.Rank getUserSelectedCard(List<Card> currentPlayerCards) throws Exception {
+
+        Card.Rank rank = null;
         Scanner scanner = new Scanner(System.in);
         int retryCount = 0;
+        List<Card.Rank> rankList = getRankList(currentPlayerCards);
+        //keep asking to get valid rank from the user.
         do {
             if (retryCount > 0) {
-                System.out.println("Oops!! Choose a card from your hand");
+                System.out.println("Oops!! Choose a rank from your hand");
             }
-
             System.out.println("Select the rank of the card ");
-            String rankChose = scanner.next();
-
-            System.out.println("Select the suite of the card ");
-            String suiteChose = scanner.next();
-
-            if (rankChose != null && suiteChose != null && rankChose.length() > 0 && suiteChose.length() > 0) {
-                if (!Card.lookupRank(rankChose.toUpperCase())) {
-                    System.out.println("Please enter a valid rank");
-                    continue;
+            try {
+                String rankChose = scanner.next();
+                if (rankChose != null && rankChose.length() > 0) {
+                    if ("quit".equalsIgnoreCase(rankChose)) {
+                        throw new Exception("user wants to quit the game");
+                    }
+                    rank = Card.Rank.valueOf(rankChose.toUpperCase());
+                    if (!rankList.contains(rank)) {
+                        System.out.println("Please enter a rank from your hand");
+                        continue;
+                    }
+                    retryCount++;
                 }
-                Card.Rank rank = Card.Rank.valueOf(rankChose.toUpperCase());
-
-                if (!Card.lookupSuit(suiteChose.toUpperCase())) {
-                    System.out.println("Please enter a valid suit");
-                    continue;
-
-                }
-
-                Card.Suit suit = Card.Suit.valueOf(suiteChose.toUpperCase());
-                card = new Card(suit, rank);
-                retryCount++;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Please enter a valid rank");
+                continue;
+            } catch (Exception ex) {
+                throw new Exception("Exit the game");
             }
 
-        } while (!currentPlayerCards.contains(card));
-        return card;
+        } while (!rankList.contains(rank));
+        return rank;
+    }
+
+    // RankList to select a rank from the hand
+    private List<Card.Rank> getRankList(List<Card> currentPlayerCards) {
+        List<Card.Rank> rankList = new ArrayList<>();
+        for (Card card : currentPlayerCards) {
+            rankList.add(card.getRank());
+        }
+        return rankList;
     }
 
     // Card is being asked to collect from the opponent
@@ -196,7 +197,7 @@ public class GoFish extends CardGame {
                 List<Card> cardList = entry.getValue();
                 for (Card card : cardList) {
                     if (card.getRank().equals(rank)) {
-                        System.out.println("The card " + card + " is available with user " + opponentPlayer.getName());
+                        System.out.println("The rank " + rank + " is available with user " + opponentPlayer.getName());
                         System.out.println("Fantastic!!, Grab all the cards from the user");
                         takeAllSameCards(currentPlayer, opponentPlayer, rank);
                         return true;
@@ -207,11 +208,11 @@ public class GoFish extends CardGame {
     }
 
     //Check if the opponent has the card asked.
-    private Card checkWithOpponent(Player hPlayer) throws Exception {
-        Card cardAsked = selectCardFromHand(hPlayer);
+    private Card.Rank checkWithOpponent(Player hPlayer) throws Exception {
+        Card.Rank rankAsked = selectCardFromHand(hPlayer);
         boolean flag;
         do {
-            if (null != cardAsked && askCard(opponentPlayer, cardAsked.rank)) {
+            if (null != rankAsked && askCard(opponentPlayer, rankAsked)) {
                 flag = true;
                 if (!hPlayer.getName().equals("PC")) {
                     if (isHumanBookComplete()) {
@@ -224,19 +225,18 @@ public class GoFish extends CardGame {
                 }
 
             } else {
-
                 System.out.println("Go Fish!!!");
                 flag = false;
                 break;
             }
-            cardAsked = selectCardFromHand(hPlayer);
+            rankAsked = selectCardFromHand(hPlayer);
         } while (flag);
 
-        return cardAsked;
+        return rankAsked;
     }
 
     //go Fish if the opponent does not have the card
-    private void goFish(Player hPlayer, Card cardAsked) {
+    private void goFish(Player hPlayer, Card.Rank cardAsked) {
 
         Card drawnCard = drawTopCard();
 
@@ -244,7 +244,7 @@ public class GoFish extends CardGame {
             boolean toContinue = false;
             do {
                 if (!hPlayer.getName().equals("PC")) {
-                    System.out.println(" The card drawn from the pond is " + drawnCard);
+                    System.out.println("The card drawn from the pond is " + drawnCard);
                     humanPlayerCard.add(drawnCard);
                     currentPlayerCards = humanPlayerCard;
                     if (isHumanBookComplete()) {
@@ -266,7 +266,7 @@ public class GoFish extends CardGame {
                     break;
                 }
 
-                if (null != cardAsked && cardAsked.getRank().equals(drawnCard.getRank())) {
+                if (null != cardAsked && cardAsked.equals(drawnCard.getRank())) {
                     drawnCard = drawTopCard();
                     toContinue = true;
                 } else {
@@ -295,6 +295,7 @@ public class GoFish extends CardGame {
         return opponentPlayerCards;
     }
 
+    // To check if humanPlayer book is complete
     Boolean isHumanBookComplete() {
 
         Map<Card.Rank, Integer> rankMap = new HashMap<>();
@@ -308,7 +309,7 @@ public class GoFish extends CardGame {
                 }
             }
         }
-
+        // To remove cards of the same rank
         Set<Card.Rank> rankSet = rankMap.keySet();
         Iterator<Card.Rank> iterator = rankSet.iterator();
         while (iterator.hasNext()) {
@@ -328,6 +329,7 @@ public class GoFish extends CardGame {
         return false;
     }
 
+    // To check if humanPlayer book is complete
     Boolean isPcBookComplete() {
 
         Map<Card.Rank, Integer> rankMap = new HashMap<>();
@@ -358,6 +360,7 @@ public class GoFish extends CardGame {
         return false;
     }
 
+    //To change the turn
     Player nextTurn(Player currentPlayer) {
         if (currentPlayer.getName().equals("PC")) {
             currentPlayer = humanPlayer;
@@ -367,6 +370,7 @@ public class GoFish extends CardGame {
         return currentPlayer;
     }
 
+    //Take cards from deck when cards in hand is zero
     void takeCardsFromDeck(Player player) {
         if (!player.getName().equals("PC")) {
             if (remainingDeck.size() >= 7) {
@@ -397,6 +401,7 @@ public class GoFish extends CardGame {
             System.out.println("Your Score : " + humanPlayerBooks);
             System.out.println("The winner is pcPlayer, Nice Play !!!");
         }
+        this.isPlaying = false;
     }
 
     @Override
