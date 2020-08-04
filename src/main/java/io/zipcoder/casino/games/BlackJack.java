@@ -243,6 +243,7 @@ public class BlackJack extends CardGame implements GamblingGame{
     }
 
     void setWinner(int playerScore, int dealerScore) {
+        printBothHands();
         if (playerScore > 21) {
             winner = dealer;
         } else if (dealerScore > 21) {
@@ -361,7 +362,7 @@ public class BlackJack extends CardGame implements GamblingGame{
             cards[index] = card.toString();
             index++;
         }
-        console.print(dealersHand.stream().map(String::valueOf).collect(Collectors.joining(" | "))+".");
+        console.println(dealersHand.stream().map(String::valueOf).collect(Collectors.joining(" | "))+".");
     }
 
     Boolean checkHand(ArrayList<Card> hand) {
