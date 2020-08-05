@@ -1,0 +1,73 @@
+package io.zipcoder.casino.games;
+
+public enum BetType {
+    PASS("pass"),
+    PASS_ODDS("pass odds"),
+    DONT_PASS("don't pass"),
+    DONT_PASS_ODDS("don't pass odds"),
+    COME("come"),
+    COME_4("come 4"),
+    COME_ODDS_4("come odds 4"),
+    COME_5("come 5"),
+    COME_ODDS_5("come odds 5"),
+    COME_6("come 6"),
+    COME_ODDS_6("come odds 6"),
+    COME_8("come 8"),
+    COME_ODDS_8("come odds 8"),
+    COME_9("come 9"),
+    COME_ODDS_9("come odds 9"),
+    COME_10("come 10"),
+    COME_ODDS_10("come odds 10"),
+    DONT_COME("don't come"),
+    DONT_COME_4("don't come 4"),
+    DONT_COME_ODDS_4("don't come odds 4"),
+    DONT_COME_5("don't come 5"),
+    DONT_COME_ODDS_5("don't come odds 5"),
+    DONT_COME_6("don't come 6"),
+    DONT_COME_ODDS_6("don't come odds 6"),
+    DONT_COME_8("don't come 8"),
+    DONT_COME_ODDS_8("don't come odds 8"),
+    DONT_COME_9("don't come 9"),
+    DONT_COME_ODDS_9("don't come odds 9"),
+    DONT_COME_10("don't come 10"),
+    DONT_COME_ODDS_10("don't come odds 10"),
+    PLACE_WIN_4("place 4"),
+    PLACE_WIN_5("place 5"),
+    PLACE_WIN_6("place 6"),
+    PLACE_WIN_8("place 8"),
+    PLACE_WIN_9("place 9"),
+    PLACE_WIN_10("place 10"),
+    BUY_4("buy 4"),
+    BUY_5("buy 5"),
+    BUY_6("buy 6"),
+    BUY_8("buy 8"),
+    BUY_9("buy 9"),
+    BUY_10("buy 10"),
+    LAY_4("lay 4"),
+    LAY_5("lay 5"),
+    LAY_6("lay 6"),
+    LAY_8("lay 8"),
+    LAY_9("lay 9"),
+    LAY_10("lay 10"),
+    BIG_6("big 6"),
+    BIG_8("big 8"),
+    HARD_4("hard 4"),
+    HARD_6("hard 6"),
+    HARD_8("hard 8"),
+    HARD_10("hard 10"),
+    FIELD("field"),
+    ANY_CRAPS("craps"),
+    CRAPS_2("craps 2"),
+    CRAPS_3("craps 3"),
+    CRAPS_12("craps 12"),
+    ANY_7("seven"),
+    ANY_11("eleven");
+
+    private String name;
+    public String getName(){
+        return this.name;
+    }
+    private BetType(String name){
+        this.name = name;
+    }
+}
