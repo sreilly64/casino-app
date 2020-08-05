@@ -308,7 +308,7 @@ class BlackJackTest {
         testBlackJack.dealersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, SIX), new Card(HEARTS, NINE)));
         assertTrue(testBlackJack.checkForNatural());
         String expected = "You have: ACE of HEARTS | TEN of HEARTS.\nDealer has: SIX of DIAMONDS | NINE of HEARTS." +
-                              "\nYou have Black Jack!\n";
+                              "\n\nYou have Black Jack!\n";
         assertEquals(expected, outContent.toString());
         assertSame(testBlackJack.winner, testPlayer);
     }
@@ -321,7 +321,7 @@ class BlackJackTest {
         testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, SEVEN), new Card(HEARTS, NINE)));
         assertTrue(testBlackJack.checkForNatural());
         String expected = "You have: SEVEN of DIAMONDS | NINE of HEARTS.\nDealer has: ACE of HEARTS | TEN of HEARTS" +
-                              ".\nDealer has Black Jack!\n";
+                              ".\n\nDealer has Black Jack!\n";
         assertEquals(expected, outContent.toString());
         assertSame(testBlackJack.winner, testBlackJack.dealer);
     }
@@ -334,7 +334,7 @@ class BlackJackTest {
         testBlackJack.playersHand = new ArrayList<>(Arrays.asList(new Card(DIAMONDS, ACE), new Card(DIAMONDS, TEN)));
         assertTrue(testBlackJack.checkForNatural());
         String expected = "You have: ACE of DIAMONDS | TEN of DIAMONDS.\nDealer has: ACE of HEARTS | TEN of HEARTS." +
-                              "\nYou and Dealer have Black Jack!\n";
+                              "\n\nYou and Dealer have Black Jack!\n";
         assertEquals(expected, outContent.toString());
         assertEquals(testBlackJack.winner, new Player("No one", 0));
     }
