@@ -35,24 +35,28 @@ public class CasinoDriverTest {
 
     @Test
     void chooseSelection() {
-        testCasinoDriver.chooseSelection(true, "N/A");
-        String expected = "We didn't quite catch that. ";
+        testCasinoDriver.chooseLoggedInSelection(true, "n/a");
+        String expected = "We didn't quite catch that.\n";
         assertEquals(expected, outContent.toString());
     }
 
     @Test
     void chooseSelection2() {
-        assertFalse(testCasinoDriver.chooseSelection(true, "Quit"));
+        assertFalse(testCasinoDriver.chooseLoggedInSelection(true, "quit"));
     }
 
     @Test
     void chooseSelection3() {
         testCasinoDriver.setCurrentPlayer(testPlayer);
-        testCasinoDriver.chooseSelection(true, "Login");
-        String expected = "Lake is already logged in.\n";
+        testCasinoDriver.chooseLoggedInSelection(true, "get balance");
+        String expected = "Your current balance is: $1000.\n";
         assertEquals(expected, outContent.toString());
     }
 
+    @Test
+    void chooseSelection5() {
+        assertFalse(testCasinoDriver.chooseNotLoggedInSelection(true, "quit"));
+    }
 
     @Test
     void playerLogin() {
@@ -96,7 +100,7 @@ public class CasinoDriverTest {
     void playerLogout() {
         testCasinoDriver.setCurrentPlayer(testPlayer);
         testCasinoDriver.playerLogout();
-        String expected = "You are logged out. ";
+        String expected = "You are logged out.\n";
         assertNull(testCasinoDriver.getCurrentPlayer());
         assertEquals(expected, outContent.toString());
     }
@@ -104,7 +108,7 @@ public class CasinoDriverTest {
     @Test
     void playerLogout2() {
         testCasinoDriver.playerLogout();
-        String expected = "Nobody is logged in... ";
+        String expected = "Nobody is logged in...\n";
         assertNull(testCasinoDriver.getCurrentPlayer());
         assertEquals(expected, outContent.toString());
     }

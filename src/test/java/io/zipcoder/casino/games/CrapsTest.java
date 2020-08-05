@@ -977,7 +977,7 @@ public class CrapsTest {
     @org.junit.jupiter.api.Test
     void printCurrentGamePhaseComeOut() {
         //given
-        String expected = "Come Out roll\n";
+        String expected = "PHASE: Come Out roll\n";
         //when
         craps.printCurrentGamePhase();
         //then
@@ -987,7 +987,7 @@ public class CrapsTest {
     @org.junit.jupiter.api.Test
     void printCurrentGamePhasePoint() {
         //given
-        String expected = "The Point is ON: 4\n";
+        String expected = "PHASE: Point is ON: 4\n";
         craps.setGamePhase(false);
         craps.setCurrentPoint(4);
         //when
