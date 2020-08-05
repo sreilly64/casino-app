@@ -280,7 +280,6 @@ public class GoFishTest {
 
     }
 
-    @Ignore
     @org.junit.Test(expected = Exception.class)
     public void getUserSelectedCardTest() throws Exception {
         String input = "right";

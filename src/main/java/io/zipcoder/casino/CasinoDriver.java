@@ -21,36 +21,56 @@ public class CasinoDriver {
     void startCasino() {
         boolean inSession = true;
         console.println("Welcome to Ocean's Three Casino~");
+        String userInput;
         while (inSession) {
-            String userInput = console.getStringInput("Make a selection: <Login> | <Logout> | <Choose Game> | " +
-                                                          "<Quit>");
-            inSession = chooseSelection(inSession, userInput);
+            if(getCurrentPlayer() == null){
+                userInput = console.getStringInput("Make a selection: <Login> | <Quit>");
+                inSession = chooseNotLoggedInSelection(inSession, userInput.toLowerCase());
+            }else{
+                userInput = console.getStringInput("Make a selection: <Choose Game> | <Get Balance> | <Logout> |  <Quit>");
+                inSession = chooseLoggedInSelection(inSession, userInput.toLowerCase());
+            }
         }
     }
 
-    Boolean chooseSelection(boolean inSession, String userInput) {
+    Boolean chooseNotLoggedInSelection(boolean inSession, String userInput){
         switch (userInput) {
-            case "Login":
             case "login":
                 playerLogin();
                 break;
-            case "Logout":
-            case "logout":
-                playerLogout();
-                break;
-            case "Choose Game":
-            case "choose Game":
-                chooseGame();
-                break;
-            case "Quit":
             case "quit":
                 console.println("Come again soon!");
                 inSession = false;
                 break;
             default:
-                console.print("We didn't quite catch that. ");
+                console.print("We didn't quite catch that.\n");
         }
         return inSession;
+    }
+
+    Boolean chooseLoggedInSelection(boolean inSession, String userInput) {
+        switch (userInput) {
+            case "logout":
+                playerLogout();
+                break;
+            case "choose game":
+                chooseGame();
+                break;
+            case "get balance":
+                getBalance();
+                break;
+            case "quit":
+                console.println("Come again soon!");
+                inSession = false;
+                break;
+            default:
+                console.print("We didn't quite catch that.\n");
+        }
+        return inSession;
+    }
+
+    public void getBalance() {
+        System.out.println("Your current balance is: $" + this.currentPlayer.getCurrentFunds() + ".");
     }
 
     void playerLogin() {
@@ -73,7 +93,7 @@ public class CasinoDriver {
     Boolean isReturningPlayer(String name) {
         if (playersList.containsKey(name)) {
             console.print("Welcome back "+name+". Your current funds are $"+playersList.get(name).getCurrentFunds()+
-                              ". ");
+                              ".\n");
             return true;
         } else {
             console.print("Oh, you're new here. Let's make an account for you. ");
@@ -111,10 +131,10 @@ public class CasinoDriver {
 
     void playerLogout() {
         if (currentPlayer == null) {
-            console.print("Nobody is logged in... ");
+            console.print("Nobody is logged in...\n");
         } else {
             this.currentPlayer = null;
-            console.print("You are logged out. ");
+            console.print("You are logged out.\n");
         }
     }
 

@@ -2,6 +2,7 @@ package io.zipcoder.casino.games;
 
 import io.zipcoder.casino.player.Player;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ public class Craps extends DiceGame implements GamblingGame{
     private ArrayList<BetType> betsWithMultipleOfFive;
     private ArrayList<BetType> betsWithMultipleOfThree;
     private ArrayList<BetType> betsWithMultipleOfTwo;
+    private ArrayList<BetType> betToOmitFromRules;
     private HashMap<BetType, Runnable> betProcessingMap;
     private HashMap<BetType, Double> payoffMap;
     public static String gameName = "Craps";
@@ -451,9 +453,9 @@ public class Craps extends DiceGame implements GamblingGame{
 
     protected void printCurrentGamePhase() {
         if(this.comeOutPhase){
-            System.out.println("Come Out roll");
+            System.out.println("PHASE: Come Out roll");
         }else{
-            System.out.println("The Point is ON: " + this.currentPoint);
+            System.out.println("PHASE: Point is ON: " + this.currentPoint);
         }
     }
 
@@ -605,9 +607,38 @@ public class Craps extends DiceGame implements GamblingGame{
         initializePayoffMap();
 
         System.out.println("Welcome to the Craps table!");
+        printRules();
         while(this.playingGame){
             actionSelection();
         }
+    }
+
+    private void printRules() {
+        StringBuilder comeOutBets = new StringBuilder();
+        StringBuilder pointBets = new StringBuilder();
+        StringBuilder anyTimeBets = new StringBuilder();
+
+        for(BetType betType: BetType.values()){
+            if(comeOutBetsList.contains(betType)){
+                comeOutBets.append(betType.getName() + ", ");
+            }else if(pointPhaseBetsList.contains(betType)){
+                pointBets.append(betType.getName() + ", ");
+            }else if(!betToOmitFromRules.contains(betType)){
+                anyTimeBets.append(betType.getName() + ", ");
+            }
+        }
+        comeOutBets.append("\n");
+        pointBets.append("\n");
+        anyTimeBets.append("\n");
+
+        System.out.println("*****RULES*****\n" +
+                "Come Out phase only bets:\n" +
+                comeOutBets.toString() +
+                "Point phase only bets:\n" +
+                pointBets.toString() +
+                "These bets may be placed at any time:\n" +
+                anyTimeBets.toString()
+        );
     }
 
     public void initializeFields() {
@@ -738,6 +769,12 @@ public class Craps extends DiceGame implements GamblingGame{
         betsWithMultipleOfTwo.add(BetType.BUY_5);
         betsWithMultipleOfTwo.add(BetType.LAY_4);
         betsWithMultipleOfTwo.add(BetType.LAY_10);
+
+        betToOmitFromRules = new ArrayList<>();
+        betToOmitFromRules.addAll(comeBetsList);
+        betToOmitFromRules.addAll(comeOddsBetsList);
+        betToOmitFromRules.addAll(dontComeBetsList);
+        betToOmitFromRules.addAll(dontComeOddsList);
 
     }
 
